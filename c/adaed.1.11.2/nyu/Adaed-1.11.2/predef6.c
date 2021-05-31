@@ -292,7 +292,7 @@ void image_integer(int item, int base)               /*;image_integer*/
 			item /= base;
 			*--q = (digit > 9) ? digit - 10 + 'A' : digit + '0';
 		}
-		while(*p++ = *q++);
+		while((*p++ = *q++));
 		p--;
 	}
 

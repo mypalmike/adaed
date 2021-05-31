@@ -127,8 +127,9 @@ Symbol find_type(Node node) /*;find_type*/
 	/* Resolve a name that must yield a type mark.*/
 	find_old(node);
 	type_mark = N_UNQ(node);
-	if (N_OVERLOADED(node) || type_mark == (Symbol)0
-	  || !is_type(type_mark) && TYPE_OF(type_mark) != symbol_any) {
+	if (N_OVERLOADED(node)
+		|| type_mark == (Symbol)0
+	  	|| (!is_type(type_mark) && TYPE_OF(type_mark) != symbol_any)) {
 		errmsg("Invalid type mark ", "none", node);
 		N_UNQ(node) = type_mark = symbol_any;
 	}
@@ -369,7 +370,7 @@ static void find_simple_name(Node n_node)		/*;find_simple_name*/
 #ifdef IBM_PC
 	    	printf("%p", sym);
 #else
-		printf("%ld", sym);
+		printf("%p", sym);
 #endif
 		if (sym!=(Symbol)0) printf("%s", ORIG_NAME(sym));
 		printf("\n");
@@ -379,7 +380,7 @@ static void find_simple_name(Node n_node)		/*;find_simple_name*/
 #ifdef IBM_PC
 		printf("found name %p  ", found);
 #else
-		printf("found name %ld  ", found);
+		printf("found name %p  ", found);
 #endif
 		/* symbol_undef should not need special handling  ds 17 jul
 		if (found == symbol_undef) printf("?\n");
@@ -520,8 +521,9 @@ static void array_or_call(Node n_node)	/*;array_or_call*/
 		npfs = set_new(0);
 		FORSET(f=(Symbol), f_names, fs1);
 			t = TYPE_OF(f);
-			if (parameterless_callable(f) && (is_array(t)
-		      || is_access(t) && is_array((Symbol)designated_type(t))))
+			if (parameterless_callable(f)
+				&& (is_array(t)
+		      		|| (is_access(t) && is_array((Symbol)designated_type(t)))))
 				npfs = set_with(npfs, (char *)f);
 		ENDFORSET(fs1);
 		if (set_size(npfs) != 0) {
@@ -858,10 +860,11 @@ static int has_implicit_operator(Node n_node, Symbol scope, char *selector)
 			  set_new1((char *)dcl_get(DECLARED(symbol_standard0), selector));
 			return TRUE;
 		}
-		if (is_scalar_type (typ) || (is_array (typ) &&
-	      is_discrete_type (component_type (typ))) &&
-	      (streq(selector, "<") || streq(selector, "<=")
-	      || streq(selector, ">") || streq(selector, ">="))) {
+		if (is_scalar_type (typ)
+			|| ((is_array (typ)
+				&& is_discrete_type (component_type (typ)))
+			&& (streq(selector, "<") || streq(selector, "<=")
+	      		|| streq(selector, ">") || streq(selector, ">=")))) {
 			N_OVERLOADED(n_node) = TRUE;
 			N_NAMES(n_node) =
 			  set_new1((char *)dcl_get(DECLARED(symbol_standard0), selector));
@@ -901,13 +904,13 @@ static void make_any_id_node(Node n_node) /*;make_any_id_node*/
 static int is_appropriate_for_record(Symbol t) /*;is_appropriate_for_record*/
 {
 	return (is_record(t)
-	    || is_access(t) && is_record(designated_type(t)));
+	    || (is_access(t) && is_record(designated_type(t))));
 }
 
 static int is_appropriate_for_task(Symbol t)		/*;is_appropriate_for_task*/
 {
 	return (is_task_type(t)
-	    || is_access(t) && is_task_type(designated_type(t)));
+	    || (is_access(t) && is_task_type(designated_type(t))));
 }
 
 Set find_agg_types()   /*;find_agg_types*/
@@ -1114,13 +1117,15 @@ void new_agg_or_access_acc(Symbol type_mark)  /*;new_agg_or_access_acc*/
 	maybe_priv =  (Symbol) designated_type(type_mark);
 	pr = private_ancestor(maybe_priv);
 	if ((pr !=(Symbol)0 && in_open_scopes(SCOPE_OF(pr)))
-	  || (is_access(type_mark) && is_incomplete_type(pr = maybe_priv)))
+	  || (is_access(type_mark) && is_incomplete_type(pr = maybe_priv))) {
 		/* ie still incomplete.*/
-		if (!private_dependents(pr))
+		if (!private_dependents(pr)) {
 			private_dependents(pr) = set_new1((char *) type_mark);
-		else
+		} else {
 			private_dependents(pr) =
 			  set_with(private_dependents(pr), (char *) type_mark);
+		}
+	}
     initialize_representation_info(type_mark,TAG_ACCESS);
 }
 
@@ -1181,13 +1186,15 @@ void new_agg_or_access_agg(Symbol type_mark)  /*;new_agg_or_access_agg*/
 	maybe_priv = type_mark;
 	pr = private_ancestor(maybe_priv);
 	if ((pr !=(Symbol)0 && in_open_scopes(SCOPE_OF(pr)))
-	  || (is_access(type_mark) && is_incomplete_type(pr = maybe_priv)))
+	  || (is_access(type_mark) && is_incomplete_type(pr = maybe_priv))) {
 		/* ie still incomplete.*/
-		if (!private_dependents(pr))
+		if (!private_dependents(pr)) {
 			private_dependents(pr) = set_new1((char *) type_mark);
-		else
+		} else {
 			private_dependents(pr) =
 			  set_with(private_dependents(pr), (char *) type_mark);
+		}
+	}
 }
 
 char *original_name(Symbol unique_nam)	 /*;*original_name*/
@@ -1515,6 +1522,8 @@ Tuple find_renamed_entity(int kind, Tuple formals, Symbol ret, Node name_node)
 			return tup;
 		}
 	}
+
+	return NULL;
 }
 
 void rename_object(Node node)  /*;rename_object*/
@@ -1875,7 +1884,7 @@ Tuple check_nat_type(Node expr_node)	 /*;check_nat_type*/
 			errmsg("Renamed entity must be an object", "8.5", expr_node);
 		}
 		tup = tup_new(2);
-		tup[1] = (char *) nat;
+		tup[1] = (char *)(long long) nat;
 		tup[2] = (char *) t;
 		return tup;
 	}
@@ -1912,7 +1921,7 @@ Tuple check_nat_type(Node expr_node)	 /*;check_nat_type*/
 			 */
 			nat = (nfield == na_discriminant) ? na_constant : nrec;
 			tup = tup_new(2);
-			tup[1] = (char *) nat;
+			tup[1] = (char *)(long long) nat;
 			tup[2] = (char *) t;
 			return tup;
 		}
@@ -2147,7 +2156,7 @@ void use_clause(Node node)					/*;use_clause*/
 			errmsg_str("undeclared package name %", id, "8.4, 10.1", id_node);
 		}
 		else if (N_OVERLOADED(id_node) ||
-		  NATURE(rnam)!=na_package && NATURE(rnam) !=na_package_spec){
+		  (NATURE(rnam)!=na_package && NATURE(rnam) !=na_package_spec)) {
 			errmsg_str("% is not the name of a USEable package", id,
 			  "8.4", id_node);
 		}

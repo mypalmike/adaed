@@ -147,9 +147,9 @@ Tuple make_case_table(Node cases_node) 					/*;make_case_table*/
 				ubd_int = get_ivalue_int(ubd_node);
 				if (lbd_int <= ubd_int) {
 					tup = tup_new(3);
-					tup[1] = (char *) lbd_int;
-					tup[2] = (char *) ubd_int;
-					tup[3] = (char *) index;
+					tup[1] = (char *)(long long) lbd_int;
+					tup[2] = (char *)(long long) ubd_int;
+					tup[3] = (char *)(long long) index;
 					triplets = tup_with(triplets, (char *) tup);
 					empty = FALSE;
 				}
@@ -190,11 +190,11 @@ Tuple make_case_table(Node cases_node) 					/*;make_case_table*/
 			b3 = (int) tup[3];
 			if (a2 != b1-1) {  /* gap */
 				tup = tup_new(2);
-				tup[1] = (char *) a1;
-				tup[2] = (char *) a3;
+				tup[1] = (char *)(long long) a1;
+				tup[2] = (char *)(long long) a3;
 				result = tup_with(result, (char *) tup);
 				tup = tup_new(2);
-				tup[1] = (char *) (a2+1);
+				tup[1] = (char *)(long long) (a2+1);
 				tup[2] = (char *) 0;
 				result = tup_with(result, (char *) tup);
 
@@ -208,8 +208,8 @@ Tuple make_case_table(Node cases_node) 					/*;make_case_table*/
 			}
 			else {
 				tup = tup_new(2);
-				tup[1] = (char *) a1;
-				tup[2] = (char *) a3;
+				tup[1] = (char *)(long long) a1;
+				tup[2] = (char *)(long long) a3;
 				result = tup_with(result, (char *) tup);
 				a1 = b1; 
 				a2 = b2; 
@@ -217,17 +217,17 @@ Tuple make_case_table(Node cases_node) 					/*;make_case_table*/
 			}
 		}
 		tup  = tup_new(2);
-		tup[1] = (char *) a1;
-		tup[2] = (char *) a3;
+		tup[1] = (char *)(long long) a1;
+		tup[2] = (char *)(long long) a3;
 		result = tup_with(result, (char *) tup);
 		tup = tup_new(2);
 		if (a2 != MAX_INTEGER) {
-			tup[1] = (char *) a2+1;
+			tup[1] = (char *)(long long) a2+1;
 			tup[2] = (char *) 0;
 		}
 		else {
 			tup[1] = (char *) 0; /* does not really matter */
-			tup[2] = (char *) a3;/* merge with the preceeding */
+			tup[2] = (char *)(long long) a3;/* merge with the preceeding */
 		}
 		result = tup_with(result, (char *) tup);
 	}
@@ -502,7 +502,7 @@ void gen_loop(Node node)										/*;gen_loop*/
 
 	if (id_node != OPT_NODE) {
 		label_name               = N_UNQ(id_node);
-		labelmap_put(label_name, LABEL_STATIC_DEPTH, (char *) CURRENT_LEVEL);
+		labelmap_put(label_name, LABEL_STATIC_DEPTH, (char *)(long long) CURRENT_LEVEL);
 		next_local_reference(label_name);
 		gen_s(I_SAVE_STACK_POINTER, label_name);
 	}
@@ -656,7 +656,7 @@ static Tuple jump_table_put(Tuple jtab, int ndx, Symbol sym) /*;jump_table_put*/
 	}
 	/* here to add new entry */
 	jtab = tup_exp(jtab, n+2);
-	jtab[n+1] = (char *) ndx;
+	jtab[n+1] = (char *)(long long) ndx;
 	jtab[n+2] = (char *) sym;
 	return jtab;
 }

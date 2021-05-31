@@ -54,15 +54,15 @@ char *lib_name;
 extern int zpadr_opt; /* not for EXPORT */
 #endif
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	int		c, i, n;
-	int		errflg = 0, nobuffer = 0, mflag = 0;
+	int		errflg = 0, nobuffer = 0;
         int    lib_opt = FALSE;
 	extern int  optind;
 	extern char *optarg;
 	char	*t_name;
-	char	*fname, *tfname, *source_name;
+	char	*fname, *source_name;
 
 	AISFILE = (IFILE *)0;
 	AXQFILE = (IFILE *)0;
@@ -249,7 +249,7 @@ static void fold_upper(char *s)								/*;fold_upper*/
 {
 	register char c;
 
-	while (c = *s) {
+	while ((c = *s)) {
 		if (islower(c)) *s = toupper(c);
 		s++;
 	}
@@ -259,7 +259,7 @@ void fold_lower(char *s)										/*;fold_lower*/
 {
 	register char c;
 
-	while (c = *s) {
+	while ((c = *s)) {
 		if (isupper(c)) *s = tolower(c);
 		s++;
 	}

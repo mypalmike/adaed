@@ -11,6 +11,7 @@
 #include "vars.h"
 #include "ada.h"
 #include "miscprots.h"
+#include "setprots.h"
 #include "adalexprots.h"
 #include "pspansprots.h"
 
@@ -39,7 +40,7 @@ int is_terminal_node_p(short node_kind)					/*;is_terminal_node_p*/
 
 Span get_left_span_p(Node node)			/*;get_left_span_p*/
 {
-	short nkind,first;
+	short nkind;
 	Node firstelem;
 
 	nkind = N_KIND(node);
@@ -99,8 +100,8 @@ Span get_left_span_p(Node node)			/*;get_left_span_p*/
 
 Span get_right_span_p(Node node)		/*;get_right_span_p*/
 {
-	short nkind,last,length=1;
-	Node lastelem;
+	short nkind,length=1;
+	Node lastelem=NULL;
 
 	nkind = N_KIND(node);
 	if (is_terminal_node_p(nkind)) {

@@ -8,6 +8,7 @@
  */
 #include "hdr.h"
 #include "ada.h"
+#include "prserrprots.h"
 #include "adalexprots.h"
 #include "pspansprots.h"
 #include "prsutilprots.h"
@@ -33,7 +34,8 @@ void make_correction(struct two_pool *STATE_STACK)		/*;make_correction*/
 	struct	two_pool *tmp_tp ;
 	int	i ;
 	char	*tv,*ctv,*ntv ;
-	int		intok,subtk,bk ;
+	int		intok,subtk ;
+	int 	bk = 0;
 	int		n_STATE_STACK ;
 	char	msg[200];
 	int	delete_flag = 0;

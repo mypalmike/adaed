@@ -52,7 +52,7 @@ Set set_del(Set sp, char *n) 									/*;set_del*/
 				sp[i] = sp[j];
 				i++;
 	    	}
-	    	sp[0] = (char *) --cur;
+	    	sp[0] = (char *)(long long) --cur;
 		}
 	}
 	return (sp);
@@ -70,7 +70,7 @@ char   *set_from(Set sp)										/*;set_from*/
 
 	if (sp[0] == 0) chaos("set_from null_set");
 	n = (int) sp[0];
-	sp[0] = (char *) (n-1);
+	sp[0] = (char *)(long long) (n-1);
 	return sp[n];
 }
 
@@ -84,10 +84,12 @@ Set set_less(Set s, char *n)									/*;set_less*/
 		if (s[i] == n) { /* move down remaining elements */
 	    	for (j = i+1; j <= cur; j++)
 				s[j-1] = s[j];
-	    	s[0] = (char *) (--cur);  /* adjust count */
+	    	s[0] = (char *)(long long) (--cur);  /* adjust count */
 	    	return s;
 		}
 	}
+
+	return NULL;
 }
 
 Set set_new(int n)												/*;set_new*/
@@ -174,7 +176,7 @@ Set set_with(Set sp, char *n)									/*;set_with*/
 	sp = tup_exp(sp, (unsigned)  (cur+1));
 	/* insert new value at end */
 	sp[++cur] = n;
-	sp[0] = (char *) cur;
+	sp[0] = (char *)(long long) cur;
 	return sp;
 }
 
@@ -245,7 +247,7 @@ Tuple tup_exp(Tuple tp, unsigned int n)							/*;tup_exp*/
 		oldtp = tp;
 		tp = (Tuple) ecalloct(sizeof(char *), (unsigned) n+1,
 		  "tup-new-smalloc-exp");
-		tp[0] = (char *)n;
+		tp[0] = (char *)(long long)n;
 		tp[1] = oldtp[1];
 		oldtp[0] = FREE_TUPLE; /* add smalloc block to free list */
 		FREE_TUPLE = (char *) oldtp;
@@ -253,7 +255,7 @@ Tuple tup_exp(Tuple tp, unsigned int n)							/*;tup_exp*/
 	else {
 		if ((unsigned)tp[0] >= n) return tp;
 		oldn = (unsigned)tp[0]+1;
-		tp[0] = (char *)n;
+		tp[0] = (char *)(long long)n;
 		tp = (Tuple) erealloct((char *) tp, sizeof(char **) *((unsigned) n + 1),
 		  "tup-exp");
 		for (; oldn <= n; oldn++)
@@ -302,7 +304,7 @@ char   *tup_fromb(Tuple tp)									/*;tup_fromb*/
 	elt = tp[1];
 	for (i = 2; i <= n; i++) 
 		tp[i - 1] = tp[i];
-	tp[0] = (char *) n-1; /* decrement length */
+	tp[0] = (char *)(long long) n-1; /* decrement length */
 	return elt;
 }
 
@@ -369,7 +371,7 @@ Tuple tup_new(int n)											/*;tup_new*/
 	else
 		tp = (Tuple) ecalloct( (unsigned) n + 1, sizeof(char **), "tup-new");
 #endif
-	tp[0] = (char *)n;
+	tp[0] = (char *)(long long)n;
 	return tp;
 }
 
@@ -441,7 +443,7 @@ void set_print(Set sp)											/*;set_print*/
 
 	cur = (int) sp[0];
 	for (i = 1; i <= cur; i++)
-		printf("%d%c", sp[i], (i ) % 10 ? ' ' : '\n');
+		printf("%p%c", sp[i], (i ) % 10 ? ' ' : '\n');
 	if ((i ) % 10)
 		printf("\n");
 }
@@ -453,7 +455,7 @@ void tup_print(Tuple tp)										/*;tup_print*/
 	int	    i;
 
 	for (i = 1; i <= (int) tp[0]; i++)
-		printf("%d ", tp[i]);
+		printf("%p ", tp[i]);
 	printf("\n");
 }
 #endif

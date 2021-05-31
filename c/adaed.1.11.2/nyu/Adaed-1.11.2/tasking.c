@@ -40,6 +40,7 @@
 /* Include standard header modules */
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "config.h"
 #include "ipar.h"
 #include "ivars.h"
@@ -836,16 +837,18 @@ static void free_task_space()							/*;free_task_space */
 
 static void check_termination(int task, int block)		/*;check_termination */
 {
-	if ((task != NULL_TASK) && (task != 0) && (DEC(TCB_NUM_NOTERM(task)) == 1))
+	if ((task != NULL_TASK) && (task != 0) && (DEC(TCB_NUM_NOTERM(task)) == 1)) {
 		if ((TCB_STATUS(task) == COMPLETED) && (INC(TCB_FIRST(task)) == 0)) {
 			if (TCB_NUM_NOTERM(task) == 0)
 				make_ready(task, TERMINATE_EVENT);
-		}
-		else
+		} else {
 			check_termination(TCB_MASTER_TASK(task),TCB_MASTER_BLOCK(task));
+		}
+	}
 
-	if ((block != 0) && (DEC(BF_NUM_NOTERM(task, block)) == 1))
+	if ((block != 0) && (DEC(BF_NUM_NOTERM(task, block)) == 1)) {
 		make_ready(task, TERMINATE_EVENT);
+	}
 }
 
 static void check_done(int task, int block)						/*;check_done*/
@@ -1190,7 +1193,7 @@ static void check_free(struct io_item_type *item)				/*;check_free*/
 
 static int get_io(struct io_item_type *item)						/*;get_io*/
 {
-	int	wake;
+	int	wake = 0;
 
 	switch (FAS(&(II_FLAG(item)),TIMER_EVENT)){  /* was task's status */
 	case DISABLED_EVENT:  

@@ -1880,7 +1880,7 @@ static int main_loop()											/*;main_loop*/
 
 #ifdef INTERFACE
 		case I_CALL_INTERFACE: 
-			interface(GET_WORD);
+			/* TODO mwhite: ??? interface(GET_WORD); */
 			break;
 #endif
 

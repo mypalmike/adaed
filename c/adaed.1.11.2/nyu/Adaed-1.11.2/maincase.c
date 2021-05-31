@@ -68,7 +68,7 @@ void compile(Node node)											/*;compile*/
 	int         function_code;
 	Const	ival;
 	int		ikind;
-	Segment	init_val;
+	Segment	init_val = NULL;
 
 #ifdef TRACE
 	if (debug_flag)
@@ -208,7 +208,7 @@ void compile(Node node)											/*;compile*/
 				labs =tup_with(labs, (char *)N_UNQ(n));
 		ENDFORTUP(ft1);
 		FORTUP(label_name=(Symbol), labs, ft1);
-			labelmap_put(label_name, LABEL_STATIC_DEPTH, (char *)CURRENT_LEVEL);
+			labelmap_put(label_name, LABEL_STATIC_DEPTH, (char *)(long long)CURRENT_LEVEL);
 			next_local_reference(label_name);
 			gen_s(I_SAVE_STACK_POINTER, label_name);
 		ENDFORTUP(ft1);
@@ -696,8 +696,8 @@ void compile(Node node)											/*;compile*/
 
 			gen_kv(I_PUSH_IMMEDIATE, mu_byte, int_const(flag));
 			tup = tup_new(2);
-			tup[1] = (char *) tag;
-			tup[2] = (char *) tag;
+			tup[1] = (char *)(long long) tag;
+			tup[2] = (char *)(long long) tag;
 			case_table  =tup_with(case_table, (char *)tup);
 			case_bodies = tup_with(case_bodies, (char *) stmt_node);
 

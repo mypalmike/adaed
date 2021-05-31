@@ -79,7 +79,7 @@ Symbol slice_type(Node node, int is_renaming)	     /*;slice_type*/
 			/* recall that in C attribute kind kept in range_node*/
 			attr_prefix = (int)attribute_kind(range_node)-ATTR_RANGE;
 			/* 'T' or 'O' */
-			attribute_kind(range_node) = (char *)((int) attr_prefix+ATTR_FIRST);
+			attribute_kind(range_node) = (char *)(long long)((int) attr_prefix+ATTR_FIRST);
 			low_node = range_node;
 			high_node = new_attribute_node(attr_prefix+ATTR_LAST,
 			  copy_node(arg1), copy_node(arg2), get_type(range_node));
@@ -341,8 +341,8 @@ int is_variable(Node node)  /*;is_variable*/
 	 */
 
 	Node array_node, sel_node;
-	Node rec_node, exp_node;
-	int	nat ;
+	Node rec_node;
+	int	nat;
 
 	if (cdebug2 > 3) TO_ERRFILE("AT PROC :  is_variable");
 
@@ -400,7 +400,7 @@ void statement_list(Node node)  /*;statement_list*/
 
 	/* On exit, these labels become unreachable.*/
 	FORTUP(ls = (Symbol), labs, ft1);
-		label_status(ls) = (int) label_unreachable;
+		label_status(ls) = (Tuple) label_unreachable;
 	ENDFORTUP(ft1);
 	tup_free(labs);
 }
@@ -749,8 +749,8 @@ void process_case(Symbol exptype, Node cases)  /*;process_case*/
 		 		 * of choices to the count of values covered. 
 		 		 */
 				tup = tup_new(2);
-				tup[1] = (char *) lov;
-				tup[2] = (char *) hiv;
+				tup[1] = (char *) (long long)lov;
+				tup[2] = (char *) (long long)hiv;
 				valset = set_with(valset, (char *)tup);
 				numval += (hiv - lov + 1);
 
@@ -995,7 +995,8 @@ void return_statement(Node node)					/*;return_statement*/
 	int	j, nat, out_depth, certain;
 	Symbol	r_type, proc_name, tsym;
 	Fortup ft1;
-	int	i, blktyp;
+	int	i = 0;
+	int blktyp;
 
 	if (cdebug2 > 3) TO_ERRFILE("AT PROC :  return_statement");
 
@@ -1082,7 +1083,7 @@ void label_decl(Node node)  						/*;label_decl*/
 		if (NATURE(label) == na_void
 		  && !tup_mem((char *) label , (Tuple) lab_seen[tup_size(lab_seen)])) {
 			NATURE(label) = na_label;
-			label_status(label) = (int) label_unreachable;
+			label_status(label) = (Tuple) label_unreachable;
 
 			/* top(lab_seen) with:= label; */
 			tlabs = (Tuple) lab_seen[tup_size(lab_seen)];

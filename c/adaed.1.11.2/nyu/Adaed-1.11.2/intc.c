@@ -1040,8 +1040,6 @@ void create(int size, int *bse, int *off, int **ptr)			/*;create*/
 	 * Procedure create is only used for object creation.
 	 */
 
-	int *p;
-
 	if (size < 0 || size >max_mem) {
 		raise(SYSTEM_ERROR, "Ridiculous size for object creation");
 		*ptr = heap_addr + WORDS_PTR + 1;
@@ -1061,6 +1059,8 @@ void create(int size, int *bse, int *off, int **ptr)			/*;create*/
 	}
 
 #ifdef GARBAGE
+	int *p;
+
 	p = BLOCK_FRAME->bf_data_link;
 	while (p) {
 		if(*--p <= -size) { /* first fit */
@@ -1111,8 +1111,6 @@ void allocate(int size, int *bse, int *off, int **ptr)			/*;allocate*/
 	 * in the error message issued if there is insufficient room.
 	 */
 
-	int *p;
-
 	if (size < 0) {
 		raise(SYSTEM_ERROR, "Ridiculous size for object allocation");
 		*ptr = heap_addr + WORDS_PTR + 1;
@@ -1132,6 +1130,8 @@ void allocate(int size, int *bse, int *off, int **ptr)			/*;allocate*/
 	}
 
 #ifdef GARBAGE
+	int *p;
+
 	p = BLOCK_FRAME->bf_data_link;
 	while (p) {
 		if(*--p <= -size) { /* first fit */

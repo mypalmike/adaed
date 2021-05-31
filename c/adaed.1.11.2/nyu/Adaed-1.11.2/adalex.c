@@ -24,7 +24,7 @@ the token. No initialization is needed, as it has all been done statically
 #include "errsprots.h"
 #include "adalexprots.h"
 
-static int getline();
+static int adagetline();
 static struct prsstack *newtoken(int, int, int, int);
 static int isdecimal(char);
 static int ishex(char);
@@ -79,7 +79,7 @@ char *nonprintingmsg[] = {	/* Messages for non-printing characters */
 	"GS",
 	"RS",
 	"US"};
-char source_buf[NUM_LINES][MAXLINE + 1] = { '\0' }; /* Source lines buffer */
+char source_buf[NUM_LINES][MAXLINE + 1] = {{ '\0' }}; /* Source lines buffer */
 int src_index = -1;		/* Index into source lines buffer */
 
 
@@ -104,7 +104,7 @@ int src_index = -1;		/* Index into source lines buffer */
 */
 
 
-static int getline()											/*;getline*/
+static int adagetline()											/*;getline*/
 {
 	int ch, ind = 0;
 
@@ -170,7 +170,7 @@ static int isdecimal(char ch)									/*;isdecimal*/
 
 static int ishex(char ch)										/*;ishex*/
 {
-	return(isdigit(ch) || 'A' <= ch && ch <= 'F' || 'a' <= ch && ch <= 'f');
+	return(isdigit(ch) || ('A' <= ch && ch <= 'F') || ('a' <= ch && ch <= 'f'));
 }
 
 static int isletterordigit(char ch)						/*;isletterordigit*/
@@ -193,7 +193,7 @@ struct prsstack *gettok()										/*;gettok*/
 				colno += (*line == '\t') ? (8 - ((colno - 1) % 8)) : 1;
 				line++;
 			}
-			if (!*line || *line == '-' && line[1] == '-')
+			if (!*line || (*line == '-' && line[1] == '-'))
 				break;
 			canbeprime = nextcanbeprime;
 			nextcanbeprime = 0;
@@ -218,7 +218,7 @@ struct prsstack *gettok()										/*;gettok*/
 				return(tok);
 			}
 
-			else if (isdigit(*line) || *line == '.' && isdigit(line[1])) {
+			else if (isdigit(*line) || (*line == '.' && isdigit(line[1]))) {
 			/* Scan numeric literals */
 				char num[MAXLINE + 3];
 				int ind = 0, chread = 0, result;
@@ -282,7 +282,7 @@ struct prsstack *gettok()										/*;gettok*/
 
 						sprintf(msg,
   "Invalid character %s in character literal replaced by space",
-						  nonprintingmsg[line[1]]);
+						  nonprintingmsg[(int)line[1]]);
 						lexerr(lineno, colno + 1, colno + 1, msg);
 						len = (line[1] == '\t') ? (10 - (colno % 8)) : 2;
 					}
@@ -412,7 +412,7 @@ struct prsstack *gettok()										/*;gettok*/
 						char msg[80];
 
 						sprintf(msg, "Invalid character %s in string deleted",
-						  nonprintingmsg[line[oldindex++]]);
+						  nonprintingmsg[(int)(line[oldindex++])]);
 						lexerr(lineno, col, col, msg);
 						col += (line[oldindex] == '\t') ? 7 - ((col-1)%8) : -1;
 					}
@@ -489,14 +489,14 @@ struct prsstack *gettok()										/*;gettok*/
 				*ch = *line;
 				ch[1] = '\0';
 				sprintf(msg, "Bad character in file ignored: %s",
-				    (isprint(*line)) ? ch : nonprintingmsg[*line]);
+				    (isprint(*line)) ? ch : nonprintingmsg[(int)*line]);
 				lexerr(lineno, colno, colno, msg);
 				if (isprint(*line))
 					colno++;
 				line++;
 			}
 		}
-		if (getline() == EOF)
+		if (adagetline() == EOF)
 			return(newtoken(EOFT_SYM, EOFT_SYM, lineno, colno));
 	}
 }
@@ -617,8 +617,8 @@ static void checkbased(char *str, int *ind)/*;checkbased*/
 		while (*++pos != '#') {
 			if (islower(*pos))
 				*pos = toupper(*pos);
-			if (isdigit(*pos) && *pos - '0' >= base
-			  || isalpha(*pos) && *pos - 'A' >= base - 10) {
+			if ((isdigit(*pos) && *pos - '0' >= base)
+			  || (isalpha(*pos) && *pos - 'A' >= base - 10)) {
 				lexerr(lineno, colno + pos - str, colno + pos - str,
 				  "Invalid based-number digit");
 				err = 1;

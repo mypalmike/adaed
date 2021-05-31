@@ -40,7 +40,7 @@ void adasem(Node node)											/*;adasem*/
 		printf("node type: %s %d %p\n", kind_str(N_KIND(node)), N_KIND(node),
 		  node);
 #else
-		printf("node type: %s %d %ld\n", kind_str(N_KIND(node)), N_KIND(node),
+		printf("node type: %s %d %p\n", kind_str(N_KIND(node)), N_KIND(node),
 		  node);
 #endif
 	}
@@ -910,7 +910,7 @@ void adasem(Node node)											/*;adasem*/
 	default:
 		if (node == (Node)0) return;
 		/* above is single line added re OPT_NODE  4 jul*/
-		printf("adasem: invalid node %d kind %d\n", node, N_KIND(node));
+		printf("adasem: invalid node %p kind %d\n", node, N_KIND(node));
 		errmsg_str("System error: invalid node %", kind_str(N_KIND(node)),
 		  "none", node);
 	}

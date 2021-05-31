@@ -85,7 +85,7 @@ void gen_package(Node pack_node)							/*;gen_package*/
 
 	/* needs body already checked by FE */
 	tup = tup_new(3);
-	tup[1] = (char *) TASKS_DECLARED;
+	tup[1] = (char *)(long long) TASKS_DECLARED;
 	tup[2] = (char *) 0;
 	tup[3] = (char *) tup_copy(SUBPROG_SPECS);
 	MISC(package_name) = (char *) tup;
@@ -249,8 +249,8 @@ void unit_package_spec(Node pack_node)					/*;unit_package_spec*/
 	gen(I_END);
 
 	tup = tup_new(3);
-	tup[1] = (char *) TASKS_DECLARED;
-	tup[2] = (char *) SPECS_DECLARED;
+	tup[1] = (char *)(long long) TASKS_DECLARED;
+	tup[2] = (char *)(long long) SPECS_DECLARED;
 	tup[3] = (char *) SUBPROG_SPECS; /* note 3rd comp was formerly signature*/
 	MISC(package_name)	   = (char *) tup;
 	CODE_SEGMENT_MAP = segment_map_put(CODE_SEGMENT_MAP, CURRENT_CODE_SEGMENT,

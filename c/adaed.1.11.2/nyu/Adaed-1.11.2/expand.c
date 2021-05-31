@@ -56,7 +56,8 @@ void expand(Node node)												/*;expand*/
 
 	Fortup      ft1, ft2;
 	Tuple       tup, tup1, tup2;
-	Symbolmap   instance_map, type_map;
+	Symbolmap   instance_map = NULL;
+	Symbolmap	type_map;
 	Node        node1, node2, node3, node4;
 	Symbol      sym1, sym2, sym3, sym4;
 	int         nk, cboolean;
@@ -216,7 +217,7 @@ void expand(Node node)												/*;expand*/
 			/* must be range. */
 			sym1 = N_TYPE(node1);
 			nk = (int)attribute_kind(node1) - ATTR_RANGE;   /* 'T' or 'O'*/
-			attribute_kind(node1) = (char *) (nk + ATTR_FIRST);
+			attribute_kind(node1) = (char *)(long long) (nk + ATTR_FIRST);
 			N_AST2(node) = new_attribute_node(nk + ATTR_LAST,
 			  N_AST2(node1), N_AST3(node1), sym1);
 			N_KIND(node) = as_range;
@@ -357,7 +358,7 @@ void expand(Node node)												/*;expand*/
 			N_AST1(node) = (Node)0;
 			N_AST2(node) = (Node)0;
 			/* TBSL: check translation of following carefully */
-			N_VAL(node) = (char *) tup_new1((char *) get_ivalue_int(node1));
+			N_VAL(node) = (char *) tup_new1((char *)(long long) get_ivalue_int(node1));
 		}
 		else {
 			/* Transform into an aggregate */
@@ -946,14 +947,14 @@ void expand(Node node)												/*;expand*/
 		sym1 = N_UNQ(node);     /* procedure name */
 		node1 = N_AST1(node);
 		tup = tup_new(2);
-		tup[1] = (char *) interface_counter++;  /* integer mapped to the
+		tup[1] = (char *)(long long) interface_counter++;  /* integer mapped to the
 		                                               interfaced subprogram */
 		/* the tuple interfaced_procedures consists of unit numbers of
 		 * interfaced procedures followed by a string which contains
 		 * the call to this interfaced procedure
 		 */
 		interfaced_procedures = tup_with(interfaced_procedures,
-		  (char *) unit_number_now);
+		  (char *)(long long) unit_number_now);
 		if (streq(N_VAL(node1), "C")) {
 			interfaced_procedures = tup_with(interfaced_procedures,
 			  c_interface(sym1, (int) tup[1]));

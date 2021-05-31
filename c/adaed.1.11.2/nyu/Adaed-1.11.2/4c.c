@@ -274,7 +274,8 @@ Symbol complete_selected_expn(Node expn, Symbol c_type)
 
 	Node	obj, s_node, acc_obj;
 	Set types1;
-	Symbol	comp_t, o_t, t, comp, obj_t, c;
+	Symbol	comp_t, o_t, t, comp, c;
+	Symbol obj_t = NULL;
 	int		out_c;
 	Forset	fs1;
 	char	*selector;
@@ -420,6 +421,8 @@ static Triplet *is_partition(Tuple choice_tuple, int choice_tuple_size,
 		i_trip->sup = ((Triplet *) choice_tuple[choice_tuple_size])->sup;
 		return (i_trip);
 	}
+
+	return NULL;
 }
 
 static Tuple sort_case(Tuple tuple_to_sort)						/*;sort_case*/
@@ -995,7 +998,7 @@ void complete_string_literal(Node node, Symbol comp)
 		strglen = strlen(strg);
 		arr = tup_new(strglen);
 		for (i = 1; i <= strglen; i++)
-			arr[i] = (char *) strg[i-1];
+			arr[i] = (char *)(long long) strg[i-1];
 		N_VAL(node) = (char *) arr;
 		N_KIND(node) = as_string_ivalue;
 	}
@@ -1012,7 +1015,7 @@ void complete_string_literal(Node node, Symbol comp)
 		arr = tup_new(strglen);
 		lit = emalloct(4, "complete-string-literal");
 		exists = FALSE;
-		for (istr = 0; c = strg[istr]; istr++) {
+		for (istr = 0; (c = strg[istr]); istr++) {
 			lit[0] = lit[2] = '\'';
 			lit[1] = c;
 			lit[3] = '\0';
@@ -1557,7 +1560,8 @@ static Symbol check_discriminant_dependence(Symbol comp_type, Tuple discr_map)
 	Node    ubd, lbd, e;
 	Symbol  d, type_name, index, new_index, new_type, new_acc;
 	Tuple   comp_discr_map, new_discr_map;
-	int     i, newi, new_t;
+	int     i, newi;
+	int			new_t = 0;
 	Fortup  ft1;
 
 	if (tup_size(discr_map) == 0) return comp_type;

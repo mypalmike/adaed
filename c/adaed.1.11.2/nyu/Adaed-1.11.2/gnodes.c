@@ -38,7 +38,7 @@ Node new_number_node(int value)								/*;new_number_node*/
 	Node	node;
 
 	node		= node_new(as_number);
-	N_VAL (node) = (char *) value;
+	N_VAL (node) = (char *)(long long) value;
 	return node;
 }
 
@@ -342,7 +342,7 @@ Node new_attribute_node(int attr, Node arg1, Node arg2, Symbol typ)
 	attr_node         = new_node(as_attribute);
 	/* attach attribute code to parent node */
 	N_AST1(attr_node) = id_node ;
-	attribute_kind(attr_node)   = (char *) attr;
+	attribute_kind(attr_node)   = (char *)(long long) attr;
 	N_AST2(attr_node) = arg1 ;
 	N_AST3(attr_node) = arg2 ;
 	N_TYPE(attr_node) = typ;

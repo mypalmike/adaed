@@ -375,7 +375,7 @@ unsigned int PC()														/*;PC*/
 #ifdef DEBUG
 void zpseg(Segment seg)												/*;zpseg*/
 {
-	printf("Segment %d x%x ", (int)seg, seg);
+	printf("Segment %d x%p ", (int)seg, seg);
 	if (seg->seg_kind == SEGMENT_KIND_CODE) printf(" code");
 	else printf(" data");
 	printf(" size %d pos %d max_pos %d dim %d ext %d\n", seg->seg_size,

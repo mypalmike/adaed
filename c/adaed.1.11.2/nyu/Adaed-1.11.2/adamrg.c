@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <malloc.h>
+/* #include <malloc.h> */
 #include <string.h>
 #ifdef IBM_PC
 #include "stdlib.h"

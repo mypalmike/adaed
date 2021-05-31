@@ -51,7 +51,7 @@ extern Segment	CODE_SEGMENT, DATA_SEGMENT, DATA_SEGMENT_MAIN;
 extern Segment   VARIANT_TABLE, FIELD_TABLE;
 
 extern int ADA_MIN_INTEGER, ADA_MAX_INTEGER;
-extern *ADA_MIN_INTEGER_MP, *ADA_MAX_INTEGER_MP;
+extern int *ADA_MIN_INTEGER_MP, *ADA_MAX_INTEGER_MP;
 extern long ADA_MIN_FIXED, ADA_MAX_FIXED;
 extern int *ADA_MIN_FIXED_MP, *ADA_MAX_FIXED_MP;
 
@@ -443,7 +443,7 @@ void gen_subtype(Symbol type_name)							/*;gen_subtype*/
 	Tuple base_index_list, field_map;
 	Const plow, phigh, lw_val, hg_val, b_lw_val, b_hg_val, consT;
 	int lw_vali, hg_vali, b_lw_vali, b_hg_vali;
-	int low_int, high_int, val_low = 0, val_high = 0, val_defined = 0;
+	int low_int = 0, high_int = 0, val_low = 0, val_high = 0, val_defined = 0;
 	float low_float, high_float;
 	Const low_const, high_const, small_const;
 	Rational rat;
@@ -1166,6 +1166,8 @@ long rat_tof(Const value, Const small, int size)				/*;rat_tof*/
 	end if;
 	end if;
 #endif
+
+	return 0;
 }
 
 static void process_record(Symbol type_name)				/*;process_record*/
@@ -1228,7 +1230,7 @@ static void process_record(Symbol type_name)				/*;process_record*/
 		/* dep_types         := [discr_dep_subtype(d):d in type_list]; */
 		dep_types = tup_new(tup_size(type_list));
 		FORTUPI(d = (Node), type_list, i, ft1);
-			dep_types[i] = (char *) discr_dep_subtype(d);
+			dep_types[i] = (char *)(long long) discr_dep_subtype(d);
 		ENDFORTUP(ft1);
 		varying_size_flag = FALSE;
 		for (i = 1; i <= tup_size(type_list); i++) {
@@ -1351,7 +1353,7 @@ static int linearize_record(Tuple fixed_part_list, Node variant_part_node)
 #endif
 	FORTUP(f_name = (Symbol), fixed_part_list, ft1);
 		f_type = TYPE_OF(f_name);
-		FIELD_NUMBER(f_name) = (char *) CURRENT_FIELD_NUMBER;
+		FIELD_NUMBER(f_name) = (char *)(long long) CURRENT_FIELD_NUMBER;
 		CURRENT_FIELD_NUMBER += 1;
 		FIELD_OFFSET(f_name) = CURRENT_FIELD_OFFSET;
 		/* FIELD_TABLE +:= [CURRENT_FIELD_OFFSET] + * reference_of(f_type); */
@@ -1391,7 +1393,7 @@ static int linearize_record(Tuple fixed_part_list, Node variant_part_node)
 		for (i = n; i > 0; i--)
 			table[i + 1] = table[i];
 		tup = tup_new(2);
-		tup[1] = (char *)(n + 1);
+		tup[1] = (char *)(long long)(n + 1);
 		tup[2] = (char *) 0;
 		table[1] = (char *) tup;
 		ntable = tup_new(n+1);
@@ -1446,9 +1448,9 @@ static int linearize_record(Tuple fixed_part_list, Node variant_part_node)
 			v_index = linearize_record(f_part, v_node);
 			/* case_range := [first_field, first_field+#f_part-1, v_index]; */
 			case_range = tup_new(3);
-			case_range[1] = (char *) first_field;
-			case_range[2] = (char *)(first_field + tup_size(f_part) - 1);
-			case_range[3] = (char *) v_index;
+			case_range[1] = (char *)(long long) first_field;
+			case_range[2] = (char *)(long long)(first_field + tup_size(f_part) - 1);
+			case_range[3] = (char *)(long long) v_index;
 			/* table := 
 			 * [ [a, if b = index then case_range else b end]: [a, b] in
 			 * table ]; 

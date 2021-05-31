@@ -223,7 +223,8 @@ int stub_retrieve(char *name)					/*;stub_retrieve*/
 
 void update_lib_maps(char *name, char unit_typ)				/*;update_lib_maps*/
 {
-	char	*uname, *body, *typ, *other, *unit;
+	char	*uname, *body, *typ, *other;
+	char	*unit = NULL;
 	int	i;
 
 	/*
@@ -329,8 +330,8 @@ void stub_parent_put(char *stub, char *parent)				/*;stub_parent_put*/
 	int	si;
 	Tuple	stubtup;
 	si = stub_numbered(stub);
-	stubtup = (Tuple) stub_info[si];
-	stubtup[5] = (char *) unit_numbered(parent);
+	stubtup = (Tuple)(long long) stub_info[si];
+	stubtup[5] = (char *)(long long) unit_numbered(parent);
 }
 
 char *unit_name_names(char *u)				/*;unit_name_names*/
@@ -485,8 +486,8 @@ void current_level_put(char *sname, int cur_level)		/*;current_level_put*/
 	Tuple	tup;
 
 	i = stub_numbered(sname);
-	tup = (Tuple) stub_info[i];
-	tup[3] = (char *) cur_level;
+	tup = (Tuple)(long long) stub_info[i];
+	tup[3] = (char *)(long long) cur_level;
 }
 
 int stub_number(char *name)					/*;stub_number*/

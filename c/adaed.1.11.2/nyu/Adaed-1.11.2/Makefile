@@ -3,7 +3,8 @@
 SHELL=/bin/sh
 
 CC= gcc
-CFLAGS=-O2
+CFLAGS=-g -Werror -Wall
+#CFLAGS=-O2
 
 #CC= g++
 #CFLAGS=-g
@@ -12,13 +13,14 @@ CFLAGS=-O2
 #CFLAGS=-g -I/usr/lang/include/CC
 
 LINKER= $(CC)
-LFLAGS=-lg
+LFLAGS=
+# LFLAGS=-lg
 
 INSTALL = install
 
 BINDIR = /usr/local
 LIBDIR = /usr/local/lib
-MANDIR = /usr/local/man
+MANDIR = ~/man
 
 .SUFFIXES:
 .SUFFIXES: .o .c .h .ch .s .vbs
@@ -38,21 +40,21 @@ MANDIR = /usr/local/man
 	rm -f $*.h
 	echo >$*.h
 	chmod u+w $*.h
-	makech -h  < $< > $*.h
+	./makech -h  < $< > $*.h
 	chmod a-w $*.h
 
 .ch.c:
 	rm -f $*.c
 	echo >$*.c
 	chmod u+w $*.c
-	makech -c < $< > $*.c
+	./makech -c < $< > $*.c
 	chmod a-w $*.c
 
 .vbs.h:
 	rm -f $*.h
 	touch $*.h
 	chmod u+w $*.h
-	cdecom <$*.vbs | uniq >$*.h
+	./cdecom <$*.vbs | uniq >$*.h
 	chmod a-w $*.h
 
 # TARGET TO MAKE EVERYTHING

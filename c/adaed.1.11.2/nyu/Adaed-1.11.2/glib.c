@@ -307,7 +307,7 @@ Set precedes_map_get(char *name)						/*;precedes_map_get*/
 	unum = unit_numbered(name);
 	n = tup_size(PRECEDES_MAP);
 	for (i=1; i<=n; i+=2) {
-		if (PRECEDES_MAP[i] == (char *)unum)
+		if (PRECEDES_MAP[i] == (char *)(long long)unum)
 			return (Set) PRECEDES_MAP[i+1];
 	}
 	return set_new(0);
@@ -319,13 +319,13 @@ void precedes_map_put(char *name, Set nset)				/*;precedes_map_put*/
 	unum = unit_numbered(name);
 	n = tup_size(PRECEDES_MAP);
 	for (i=1; i<=n; i+=2) {
-		if (PRECEDES_MAP[i] == (char *) unum) {
+		if (PRECEDES_MAP[i] == (char *)(long long) unum) {
 			PRECEDES_MAP[i+1] = (char *) nset;
 			return;
 		}
 	}
 	PRECEDES_MAP = tup_exp(PRECEDES_MAP, n+2);
-	PRECEDES_MAP[n+1] = (char *) unum;
+	PRECEDES_MAP[n+1] = (char *)(long long) unum;
 	PRECEDES_MAP[n+2] = (char *) nset;
 }
 
@@ -380,11 +380,11 @@ Set remove_same_name(char *name)				/*;remove_same_name */
 		unam = pUnits[i]->libUnit;
 		if (streq(unit_name_names(unam), unit_name_names(name))
 		  && !streq(unit_name_type(unam), to_keep)) {
-			same_name = set_with(same_name, (char *) unit_numbered(unam));
+			same_name = set_with(same_name, (char *)(long long) unit_numbered(unam));
 		}
 	}
 
-	same_name = set_with(same_name, (char *) unit_numbered(name));
+	same_name = set_with(same_name, (char *)(long long) unit_numbered(name));
 	dependent = set_new(0);
 
 	/* Remove all units which depend on either units with the same identifier
@@ -395,12 +395,12 @@ Set remove_same_name(char *name)				/*;remove_same_name */
 	ENDFORSET(fs1);
 
 	/* remove "name" from the set of units that have the same id */
-	same_name = set_less(same_name, (char *) unit_numbered(name));
+	same_name = set_less(same_name, (char *)(long long) unit_numbered(name));
 
 	obsolete = set_union(same_name, dependent);
 
 	FORTUP(unam=(char *), lib_stub, ft1);
-		if (set_mem((char *) stub_parent_get(unam), obsolete))
+		if (set_mem((char *)(long long) stub_parent_get(unam), obsolete))
 			lib_stub_put(unam, (char *)0);
 	ENDFORTUP(ft1);
 
@@ -443,8 +443,8 @@ static Set remove_dependent(int unit_num)				/*;remove_dependent */
 			unam = pUnits[i]->libUnit;
 			if (is_subunit(unam)) {
 				precedes = precedes_map_get(unam);
-				if (set_mem((char *) unit_numbered(name), precedes))
-					dependent = set_with(dependent,(char *)unit_numbered(unam));
+				if (set_mem((char *)(long long) unit_numbered(name), precedes))
+					dependent = set_with(dependent,(char *)(long long)unit_numbered(unam));
 			}
 		}
 	}
@@ -455,8 +455,8 @@ static Set remove_dependent(int unit_num)				/*;remove_dependent */
 		for (i = 1; i <= unit_numbers; i++) {
 			unam = pUnits[i]->libUnit;
 			precedes = precedes_map_get(unam);
-			if (set_mem((char *) unit_numbered(name), precedes))
-				dependent = set_with(dependent, (char *) unit_numbered(unam));
+			if (set_mem((char *)(long long) unit_numbered(name), precedes))
+				dependent = set_with(dependent, (char *)(long long) unit_numbered(unam));
 		}
 	}
 	new_dep = set_new(0);
@@ -519,12 +519,12 @@ Tuple read_predef_axq(Tuple axq_needed)					/*;read_predef_axq*/
 		nsegs = getnum(axq_file, "number-segments");
 		if(nsegs != 1) chaos("read_predef_axq data segment number invalid");
 		snum = getnum(axq_file, "axq-segment-num");
-		predef_data_segments = tup_with(predef_data_segments, (char *) snum);
+		predef_data_segments = tup_with(predef_data_segments, (char *)(long long) snum);
 		newseg = segment_read(axq_file);
 		DATA_SEGMENT_MAP = segment_map_put(DATA_SEGMENT_MAP, snum, newseg);
 		/* fake code segment */
 		snum = *((int *)newseg->seg_data);
-		predef_code_segments = tup_with(predef_code_segments, (char *) snum);
+		predef_code_segments = tup_with(predef_code_segments, (char *)(long long) snum);
 		CODE_SEGMENT_MAP = segment_map_put(CODE_SEGMENT_MAP, snum, fakseg);
 	}
 	ifclose(axq_file);

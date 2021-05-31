@@ -23,7 +23,10 @@
 #define int_conv(v,w)   w[0]=1, w[1]=v
 
 static void int_norm(int *);
+
+#ifdef DEBUG_FARITH
 static void int_print(int *);
+#endif
 
 #ifdef DEBUG_FARITH
 void int_print();
@@ -391,6 +394,7 @@ static void int_norm(int *u)		/*;int__norm*/
 }
 
 /* debugging and test procedures */
+#ifdef DEBUG_FARITH
 static void int_print(int *u)									/*;int_print*/
 {
 	/* Dump multi-precision integer to standard output */
@@ -405,6 +409,7 @@ static void int_print(int *u)									/*;int_print*/
 	for (i = 2; i <= u[0]; i++)
 		printf("%3d  %0*d\n", i, DIGS, u[i]);
 }
+#endif
 
 #ifdef DEBUG_FARITH
 #define NUMBER 20

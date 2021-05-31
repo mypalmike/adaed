@@ -295,9 +295,6 @@ int is_float_type(Symbol typ)								/*;is_float_type*/
 int is_formal_parameter(Symbol sym)					/*;is_formal_parameter*/
 {
 	register int	na;
-	int                 s_n, found;
-	Symbol              same_sym, sym_scope;
-	Fortup              ft1;
 
 	na = NATURE(sym);
 	return ((na == na_in || na == na_inout || na == na_out)
@@ -396,13 +393,13 @@ void local_reference_map_put(Symbol sym, int off)	/*;local_reference_map_put*/
 	n = tup_size(LOCAL_REFERENCE_MAP);
 	for (i = 1; i <= n; i += 2) {
 		if (LOCAL_REFERENCE_MAP[i] == (char *)sym) {
-			LOCAL_REFERENCE_MAP[i+1] = (char *) off;
+			LOCAL_REFERENCE_MAP[i+1] = (char *)(long long) off;
 			return;
 		}
 	}
 	LOCAL_REFERENCE_MAP = tup_exp(LOCAL_REFERENCE_MAP, n+2);
 	LOCAL_REFERENCE_MAP[n+1] = (char *) sym;
-	LOCAL_REFERENCE_MAP[n+2] = (char *) off;
+	LOCAL_REFERENCE_MAP[n+2] = (char *)(long long) off;
 }
 
 int mu_size(int mutyp)											/*;mu_size*/
@@ -623,7 +620,7 @@ Tuple segment_map_put(Tuple tup, int sn, Segment seg)		/*;segment_map_put*/
 	}
 	/* here if no entry, make new one, possible reallocating tuple */
 	tup = tup_exp(tup, n+2);
-	tup[n+1] = (char *) sn;
+	tup[n+1] = (char *)(long long) sn;
 	tup[n+2] = (char *) seg;
 	return tup;
 }

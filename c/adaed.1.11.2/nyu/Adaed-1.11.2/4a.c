@@ -304,7 +304,7 @@ void resolve1(Node expn)										/*;resolve1*/
 #ifdef IBM_PC
 		printf(" resolve1 %p %s\n", expn, kind_str(op_name));
 #else
-		printf(" resolve1 %ld %s\n", expn, kind_str(op_name));
+		printf(" resolve1 %p %s\n", expn, kind_str(op_name));
 #endif
 	}
 
@@ -973,8 +973,8 @@ void resolv_attr(Node expn)								  /*;resolv_attr*/
 			FORTUPI(s = (Symbol), open_scopes, i, ft1);
 				s = (Symbol) open_scopes[i];
 				if (task == s 
-			      || strcmp(original_name(task), "current_task") == 0
-			      && SCOPE_OF(task) == s) {
+			      || (strcmp(original_name(task), "current_task") == 0
+			      	&& SCOPE_OF(task) == s)) {
 					notexists = FALSE;
 					break;
 				}
@@ -1200,7 +1200,7 @@ void resolve2(Node expn, Symbol context_typ)				  /*;resolve2*/
 		  , expn, kind_str(N_KIND(expn)), context_typ,
 		  ((context_typ != (Symbol)0)? ORIG_NAME(context_typ):""));
 #else
-		printf(" %ld %s context %ld %s\n"
+		printf(" %p %s context %p %s\n"
 		  , expn, kind_str(N_KIND(expn)), context_typ,
 		  ((context_typ != (Symbol)0)? ORIG_NAME(context_typ):""));
 #endif
@@ -1446,7 +1446,7 @@ void resolve2(Node expn, Symbol context_typ)				  /*;resolve2*/
 				strvlen = strlen(strvstr);
 				strvtup = tup_new(strvlen);
 				for (strvi = 1; strvi <= strvlen; strvi++)
-					strvtup[strvi] = (char *) strvstr[strvi-1];
+					strvtup[strvi] = (char *)(long long) strvstr[strvi-1];
 				ast_clear(expn);
 				N_VAL(expn) = (char *) strvtup;
 				N_KIND(expn) = as_string_ivalue;

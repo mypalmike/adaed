@@ -56,14 +56,14 @@ void subprog_patch_put(Symbol sym, int off)			/*;subprog_patch_put*/
 	n = tup_size(SUBPROG_PATCH);
 	for (i = 1; i <= n; i += 2) {
 		if ((Symbol) SUBPROG_PATCH[i] == sym ) {
-			SUBPROG_PATCH[i+1] = (char *) off;
+			SUBPROG_PATCH[i+1] = (char *)(long long) off;
 			return;
 		}
 	}
 	/* here if need new element */
 	SUBPROG_PATCH = tup_exp(SUBPROG_PATCH, n+2);
 	SUBPROG_PATCH[n+1] = (char *) sym;
-	SUBPROG_PATCH[n+2] = (char *) off;
+	SUBPROG_PATCH[n+2] = (char *)(long long) off;
 	/* SUBPROG_PATCH is map as tuple: domain elements are symbols, vales
 	 * are integers
 	 */
@@ -77,7 +77,7 @@ void subprog_patch_undef(Symbol sym)		/*;subprog_patch_undef*/
 		if ((Symbol) SUBPROG_PATCH[i] == sym) {
 			for (j = i+2; j <= n; j++) 
 				SUBPROG_PATCH[j-2] = SUBPROG_PATCH[j];
-			SUBPROG_PATCH[0] = (char *) n-2; /* adjust size */
+			SUBPROG_PATCH[0] = (char *)(long long) n-2; /* adjust size */
 			break;
 		}
 	}
@@ -318,8 +318,8 @@ void reference_of(Symbol name)							/*;reference_of*/
 #endif
 
 	if (tup_mem((char *) name , PARAMETER_SET)) {
-		if (!tup_mem((char *) PC(), CODE_PATCH_SET)) {
-			CODE_PATCH_SET = tup_with(CODE_PATCH_SET, (char *)PC());
+		if (!tup_mem((char *)(long long) PC(), CODE_PATCH_SET)) {
+			CODE_PATCH_SET = tup_with(CODE_PATCH_SET, (char *)(long long)PC());
 		}
 		/* Parameters always referenced */
 		/* from assemble, peep-hole OK. */
@@ -416,7 +416,7 @@ int select_entry(int a_map_code , Symbol an_item, int a_map_name)
 	 */
 
 	int indx, isin, nmap, j;
-	Tuple	a_map;
+	Tuple	a_map = NULL;
 	Tuple	utup, stup;
 	Slot		slot;
 
@@ -495,7 +495,7 @@ int select_entry(int a_map_code , Symbol an_item, int a_map_name)
 	/* initialized even if index was found in the map. */
 	utup = unit_slots_get(unit_number_now);
 	stup = (Tuple) utup[a_map_name];
-	stup = tup_with(stup, (char *) indx);
+	stup = tup_with(stup, (char *)(long long) indx);
 	utup[a_map_name] = (char *) stup;
 	unit_slots_put(unit_number_now, utup);
 

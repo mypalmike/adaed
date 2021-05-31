@@ -52,8 +52,8 @@
 #ifndef FALSE
 #define FALSE		   0		       /* boolean false = Ada false */
 #endif
-#define MIN_LONG	   ((long)0x80000000)	       /* minimum fixed value */
-#define MAX_LONG	   ((long)0x7fffffff)	       /* maximum fixed value */
+#define MIN_LONG	   ((int)0x80000000)	       /* minimum fixed value */
+#define MAX_LONG	   ((int)0x7fffffff)	       /* maximum fixed value */
 #define ENDLESS 	   -1		       /* value for endless delay */
 #define NULL_INT	   ((int *)0)	       /* null pointer value */
 

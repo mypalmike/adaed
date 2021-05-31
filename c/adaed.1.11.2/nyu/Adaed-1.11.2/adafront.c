@@ -89,7 +89,7 @@ int main(int argc, char **argv)				/*;main*/
 	int  prefix_len, base_len, suffix_len;
 	char *basep;
 
-	Node nod;
+	/* Node nod; */
 	int		compiling_predef = 0;
 
 	/* The parser bombs on VAX if no arguments, so for now fail and

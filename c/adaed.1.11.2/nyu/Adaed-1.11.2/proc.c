@@ -394,7 +394,7 @@ void gen_subprogram(Node proc_node)						/*;gen_subprogram*/
 		relay_table = tup_new(0);
 		FORTUP(name = (Symbol), temp_relay_set, ft1);
 			if (tup_mem((char *) name, PARAMETER_SET)) {
-				relay_table  =  tup_with(relay_table, (char *)
+				relay_table  =  tup_with(relay_table, (char *)(long long)
 			    local_reference_map_get(name));
 				/*DATA_PATCH_SET with= #DATA_SEGMENT + 4 + #relay_table;*/
 #ifdef TBSN
@@ -409,12 +409,12 @@ void gen_subprogram(Node proc_node)						/*;gen_subprogram*/
 				DATA_PATCH_SET = tup_with(DATA_PATCH_SET,
 				  (char *) tup_size(relay_table));
 #endif
-				DATA_PATCH_SET = tup_with(DATA_PATCH_SET, (char *)
+				DATA_PATCH_SET = tup_with(DATA_PATCH_SET, (char *)(long long)
 			    (DATA_SEGMENT->seg_maxpos - 1 + 4 + tup_size(relay_table)) );
 			}
 			else {
 				reference_of(name);
-				relay_table = tup_with(relay_table, (char *) REFERENCE_OFFSET);
+				relay_table = tup_with(relay_table, (char *)(long long) REFERENCE_OFFSET);
 			}
 		ENDFORTUP(ft1);
 
@@ -425,10 +425,10 @@ void gen_subprogram(Node proc_node)						/*;gen_subprogram*/
 			/*DANGLING_RELAY_SETS += [proc_code_segment, #relay_table] +
 	 		 *	relay_table;
 	 		 */
-			DANGLING_RELAY_SETS = tup_with(DANGLING_RELAY_SETS, (char *)
+			DANGLING_RELAY_SETS = tup_with(DANGLING_RELAY_SETS, (char *)(long long)
 			  proc_code_segment);
 			DANGLING_RELAY_SETS = tup_with(DANGLING_RELAY_SETS, 
-			  (char *) tup_size(relay_table));
+			  (char *)(long long) tup_size(relay_table));
 			dn = tup_size(DANGLING_RELAY_SETS);
 			rn = tup_size(relay_table);
 			if (rn != 0) { /* if relay table to append */

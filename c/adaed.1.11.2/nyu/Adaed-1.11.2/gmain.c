@@ -61,14 +61,14 @@ extern int zpadr_opt; /* not for EXPORT */
 
 char *lib_name;
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	Node	 node_new ();
 	int		c, i, n;
-	int		errflg = 0, nobuffer = 0, mflag = 0;
+	int		errflg = 0, nobuffer = 0;
 	extern int  optind;
 	extern char *optarg;
-	char	*fname, *tfname;
+	char	*fname;
 	char	*t_name;
 
 	AISFILE = (IFILE *)0;
@@ -76,6 +76,7 @@ main (int argc, char **argv)
 	LIBFILE = (IFILE *)0;
 	STUBFILE = (IFILE *)0;
 	TREFILE = (IFILE *)0;
+	MSGFILE = stdout;
 
 	MAINunit = "";
 	interface_files = "";
@@ -236,7 +237,7 @@ static void fold_upper(char *s)								/*;fold_upper*/
 {
 	register char c;
 
-	while (c = *s) {
+	while ((c = *s)) {
 		if (islower(c)) *s = toupper(c);
 		s++;
 	}
@@ -246,7 +247,7 @@ void fold_lower(char *s)					/*;fold_lower*/
 {
 	register char c;
 
-	while (c = *s) {
+	while ((c = *s)) {
 		if (isupper(c)) *s = tolower(c);
 		s++;
 	}
@@ -559,9 +560,9 @@ static void init_gen()											/*;init_gen*/
 			if (((streq(unam_type, "sp") || streq(unam_type, "ss"))
 			  || (streq(unam_type, "su") && !in_names))
 			  || is_ancestor(unam) || is_generic(unam)) {
-				if (!set_mem((char *) unum, units_loaded)) {
+				if (!set_mem((char *)(long long) unum, units_loaded)) {
 					errors = errors || !load_unit(unam, TRUE);
-					units_loaded = set_with(units_loaded, (char *) unum);
+					units_loaded = set_with(units_loaded, (char *)(long long) unum);
 				}
 				ud = unit_decl_get(unam) ;
 				private_install(ud->ud_unam) ;
@@ -572,9 +573,9 @@ static void init_gen()											/*;init_gen*/
 	    			 * but load no unit more than once.
 	    			 */
 					FORSET(u_new = (int), (Set)pUnit->aisInfo.preComp, fs1);
-						if (!set_mem((char *) u_new, units_loaded))
+						if (!set_mem((char *)(long long) u_new, units_loaded))
 							units_to_load =
-							  set_with(units_to_load, (char *) u_new);
+							  set_with(units_to_load, (char *)(long long) u_new);
 					ENDFORSET(fs1);
 				}
 				if (is_generic(unam)
@@ -595,7 +596,7 @@ static void init_gen()											/*;init_gen*/
 					}
 				}
 				/* Temp kludge until FE removes self references: (generics) */
-				units_to_load = set_less(units_to_load, (char *) unum);
+				units_to_load = set_less(units_to_load, (char *)(long long) unum);
 			}
 		} /* end while */
 		set_free(units_to_load);
@@ -806,23 +807,23 @@ static void finit_gen()											/*;finit_gen*/
 	 */
 	new_comp_table = tup_new(0);
 	FORTUP(unum = (int), compilation_table, ft1);
-		if (!set_mem((char *)unum,
+		if (!set_mem((char *)(long long)unum,
 		   suppressed_units) && unum != unit_number_now)
-			new_comp_table = tup_with(new_comp_table, (char *) unum);
+			new_comp_table = tup_with(new_comp_table, (char *)(long long) unum);
 	ENDFORTUP(ft1);
-	compilation_table = tup_with(new_comp_table, (char *) unit_number_now);
+	compilation_table = tup_with(new_comp_table, (char *)(long long) unit_number_now);
 	lib_unit_put(unit_name, AISFILENAME);
 	/* if the same compilation unit appears in the same compilation (file)
 	 * more than once, disable the code for all but the last in the axqfile
 	 * so that it is not read.
 	 */
-	if (tup_mem((char *)unit_number_now, units_in_compilation))
+	if (tup_mem((char *)(long long)unit_number_now, units_in_compilation))
 		overwrite_unit_name(unit_name);
 
 	units_in_compilation = 
-	  tup_with(units_in_compilation, (char *)unit_number_now);
+	  tup_with(units_in_compilation, (char *)(long long)unit_number_now);
 
-	pUnit->libInfo.currCodeSeg = (char *) CURRENT_CODE_SEGMENT;
+	pUnit->libInfo.currCodeSeg = (char *)(long long) CURRENT_CODE_SEGMENT;
 	if (STUBS_IN_UNIT)
 		pUnit->libInfo.localRefMap = (char *) tup_copy(LOCAL_REFERENCE_MAP);
 }

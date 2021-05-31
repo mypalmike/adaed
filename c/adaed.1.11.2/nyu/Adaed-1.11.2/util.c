@@ -46,7 +46,8 @@ static Const adavall(Symbol mde, char *number, int numberl)		/*;adavall*/
 	char	numsign = '+';
 	char	*numb, *b, *dc;
 	char	*t, *expnt, *wh, *fr;
-	int	expntl, whl, frl, bse, p, bl;
+	int	whl, frl, bse, p, bl;
+	int expntl = 0;
 	int	numbl, exp_sgn;
 	int	*ibse, *ln, *e, *dv;
 	static	char *conv = "0123456789ABCDEF";

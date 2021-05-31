@@ -30,6 +30,13 @@
  * 8 byte boundaries. (e.g. SPARC).
  */
 
+#ifdef __APPLE__
+#define WORDSIZE32
+#define BSD
+#define ALIGN8
+#define OP_SYS "MacOS"
+#endif
+
 #ifdef sun
 #define WORDSIZE32
 #ifndef BSD

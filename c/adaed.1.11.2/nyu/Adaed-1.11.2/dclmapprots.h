@@ -8,11 +8,11 @@
  */
 
 void dstrings_init(unsigned int, unsigned int);
-static unsigned short dcl_lookup(char *);
+/* static unsigned short dcl_lookup(char *); */
 Declaredmap dcl_new(int);
 Symbol dcl_get_vis(Declaredmap, char *);
 Symbol dcl_get(Declaredmap, char *);
-static Symbol dcl_getp(Declaredmap, char *, int);
+/* static Symbol dcl_getp(Declaredmap, char *, int); */
 void dcl_put_vis(Declaredmap, char *, Symbol, int);
 void dcl_put(Declaredmap, char *, Symbol);
 void dcl_undef(Declaredmap, char *);

@@ -284,7 +284,7 @@ static Tuple proc_init_rec(Symbol type_name, Tuple field_names,
 	FORTUP(f_name=(Symbol), field_names, ft1);
 		one_component    = new_selector_node(out_param, f_name);
 		f_type           = TYPE_OF(f_name);
-                CONTAINS_TASK(type_name) = (char *)
+                CONTAINS_TASK(type_name) = (char *)(long long)
                   ((int)CONTAINS_TASK(type_name) | (int) CONTAINS_TASK(f_type));
 
 		f_init = (Node) default_expr(f_name);

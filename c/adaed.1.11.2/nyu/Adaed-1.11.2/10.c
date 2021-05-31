@@ -191,7 +191,7 @@ static void save_comp_info(Node node)					/*;save_comp_info*/
 	pUnit = pUnits[uindex];
 	/*PRE_COMP(unit_name) := vis_units;*/
 	FORTUP(v=(char *), all_vis, ft1);
-		vis_units = set_with(vis_units, (char *) unit_numbered(v));
+		vis_units = set_with(vis_units, (char *)(long long) unit_numbered(v));
 	ENDFORTUP(ft1);
 	pUnit->aisInfo.preComp = (char *)vis_units;
 	pUnit->aisInfo.pragmaElab = (char *) tup_copy(elab_pragmas);
@@ -322,9 +322,9 @@ static void save_tree(Node root, int uindex)		/*;save_tree*/
 			/*if (tree_node /=OPT_NODE) stack with:= a(#a-i+1);*/
 			if (nod == OPT_NODE) continue;
 			if (stack_now == stack_max) { /* expand stack */
-				stack[0] = (char *) stack_now;
+				stack[0] = (char *)(long long) stack_now;
 				stack = tup_exp(stack, (unsigned) (stack_now+STACK_INC));
-				stack[0] = (char *) stack_now;
+				stack[0] = (char *)(long long) stack_now;
 				stack_max += STACK_INC;
 			}
 			/* add node to stack */
@@ -348,9 +348,9 @@ static void save_tree(Node root, int uindex)		/*;save_tree*/
 				if (N_UNIT(nod) == unit_now) reach[(int)N_SEQ(nod)] = '1';
 				/*stack with:= a(#a-i+1);*/
 				if (stack_now == stack_max) {
-					stack[0] = (char *) stack_now;
+					stack[0] = (char *)(long long) stack_now;
 					stack = tup_exp(stack, (unsigned) stack_now+STACK_INC);
-					stack[0] = (char *) stack_now;
+					stack[0] = (char *)(long long) stack_now;
 					stack_max += STACK_INC;
 				}
 				stack[++stack_now] = (char *) nod;
@@ -485,7 +485,7 @@ Tuple unit_symbtab(Symbol unit_unam, char unit_typ)			/*;unit_symbtab*/
 	 */
 	collect_unit_nodes(unit_unam);
 
-	ignore[0] = (char *) ignore_n;
+	ignore[0] = (char *)(long long) ignore_n;
 	seen = set_new1((char *) unit_unam);
 	scopes = set_copy(seen);
 
@@ -943,7 +943,7 @@ static void save_package_instance_unit(Node node)/*;save_package_instance_unit*/
 	Symbol	unam;
 	Tuple	tup;
 	Unitdecl	ud;
-	int		saved_seq_node_n, i;
+	int		saved_seq_node_n;
 
 	context_node = N_AST1(node);
 	unit_body = N_AST2(node);
@@ -1099,7 +1099,7 @@ static void establish_context(Node node)	/*;establish_context*/
 					tupn[i] = N_VAL(un_node);
 				ENDFORTUP(ft3);
 				tup = tup_new(2);
-				tup[1] = (char *) kind;
+				tup[1] = (char *)(long long) kind;
 				tup[2] = (char *) tupn;
 				context = tup_with(context, (char *) tup);
 				if (kind == as_use) {
@@ -1226,7 +1226,8 @@ static char *get_unit(char *nam)				/*;get_unit*/
 	char	*unit, *unit1, *unit2, *su, *body_name;
 	Fortup	ft1;
 	Node	id_node;
-	Symbol	namsym, unit_unam, scope;
+	Symbol	namsym, scope;
+	Symbol	unit_unam = NULL;
 	Tuple	s_info, decscopes, decmaps;
 	Unitdecl ud;
 
@@ -1547,7 +1548,7 @@ void save_stub(Node node)							/*;save_stub*/
 	tup = (Tuple) stub_info[si];
 	tup[2] = (char *) ev;
 	stub_parent_put(stub_name, unit_name);
-	stubs_to_write = set_with(stubs_to_write, (char *) si);
+	stubs_to_write = set_with(stubs_to_write, (char *)(long long) si);
 
 	/* allocate a fake proper body for the stub. Needed for handling of
 	 * generic stubs.

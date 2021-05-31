@@ -220,7 +220,7 @@ Tuple get_formals(Node formal_list, char *proc_id) 			/*;get_formals*/
 			formal_index++;
 			tup = tup_new(4);
 			tup[1] = (char *)N_VAL(id_node);
-			tup[2] = (char *) f_mode;
+			tup[2] = (char *)(long long) f_mode;
 			tup[3] = (char *) type_mark;
 			tup[4] = (char *) copy_tree(exp_node);
 			formals[formal_index] = (char *) tup;

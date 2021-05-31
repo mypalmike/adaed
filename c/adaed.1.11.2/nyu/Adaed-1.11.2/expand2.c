@@ -381,7 +381,7 @@ void expand_decl(Node node)									/*;expand_decl*/
 	Node    id_list_node, type_indic_node, init_node, first_obj_node,
 	  const_val_node, decl_node, id_node, constrained_node;
 	Symbol  init_type_name, first_obj_name, type_name, p;
-	Tuple   tup;
+	Tuple   tup = NULL;
 	int     is_var_decl, init_len, init_len_defined,
 	const_len, const_len_defined, is_agg;
 
@@ -824,7 +824,7 @@ void expand_attr(Node node)									/*;expand_attr*/
 		  && !discr_dep) {
 			N_AST2 (node) = new_name_node (get_type (arg1));
 			/* convert from O_ to T_ attribute by adding one */
-			attribute_kind(node) = (char *) ((int)attribute_kind(node) + 1);
+			attribute_kind(node) = (char *)(long long) ((int)attribute_kind(node) + 1);
 			expand (node); 
 		}
 
@@ -1060,7 +1060,8 @@ void expand_string(Node node)								/*;expand_string*/
 	  base_lbd_node;
 	Symbol str_type, comp_type, new_type, indx_type, base_index_type;
 	Tuple  ntup, stmts_list, tup, decls;
-	int    str_len, lowest_char, highest_char, n, ubd_val_int, lbd, ubd, i;
+	int    str_len, lowest_char, highest_char, n, lbd, ubd, i;
+	int    ubd_val_int = 0;
 	Const  hg_val, lw_val;
 
 	str_type = N_TYPE(node);
@@ -1420,7 +1421,7 @@ void expand_for(Node node)										/*;expand_for*/
 		arg2 = N_AST3(range_node);
 		attr_prefix = (int)attribute_kind(range_node)-ATTR_RANGE;
 		/* 'T' or 'O'*/
-		attribute_kind(range_node) = (char *) ((int)attr_prefix + ATTR_FIRST);
+		attribute_kind(range_node) = (char *)(long long) ((int)attr_prefix + ATTR_FIRST);
 		low_node = range_node;
 		high_node = new_attribute_node(attr_prefix + ATTR_LAST,
 		  copy_node(arg1), copy_node(arg2), get_type(range_node));

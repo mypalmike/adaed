@@ -723,7 +723,8 @@ void gen_binary(Node node)										/*;gen_binary*/
 
 	Node	op_node, args_node, op1, op2;
 	Symbol	opcode, type_name, andthen, orelse, op1_type, op2_type;
-	int		op_instr, aopcode;
+	int		op_instr;
+	int		aopcode = 0;
 #ifdef TRACE
 	if (debug_flag)
 		gen_trace_node("GEN_BINARY", node);
@@ -1633,7 +1634,8 @@ Segment array_ivalue(Node node)							/*;array_ivalue*/
 	Symbol	obj_type, comp_type, selector_name;
 	Tuple	tup, subscript_list;  /* tuple(integer); */
 	int		offset, i, index, comp_size, str_len, nk, n;
-	Segment	res, obj_value;
+	Segment	res;
+	Segment obj_value = NULL;
 	Tuple	tupstr, index_list;
 	Const	exprv;
 	Fortup	ft1;
@@ -1754,10 +1756,12 @@ Segment record_ivalue(Node node)						/*;record_ivalue*/
 	 * In C, the returned value is a segment.
 	 */
 
-	Node	static_node, selector_node, val_node;
+	Node	static_node, selector_node;
+	Node	val_node = NULL;
 	Node	static_comp_node, access_node, list_node;
-	Symbol	obj_type, comp_type, selector_name;
-	Segment	obj_value;  /* tuple(integer); */
+	Symbol	comp_type, selector_name;
+	Symbol	obj_type = NULL;
+	Segment	obj_value = NULL;  /* tuple(integer); */
 	int		i, index, comp_size, nk;
 	Fortup	ft1;
 	Segment	sval;

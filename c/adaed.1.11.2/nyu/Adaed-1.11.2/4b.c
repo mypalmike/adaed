@@ -491,8 +491,9 @@ static Tuple valid_op_types(Symbol opn, Node expn)		 /*;valid_op_types*/
 	/* const unary_ops  = ['+', '-', 'abs', 'not']; */
 	Node	op_node, arg_list_node, arg1, arg2;
 	Set possible_types, opossible_types, typ1, typ2;
-	Symbol	t2, t, typ;
-	Set		types;
+	Symbol	t2, t;
+	Symbol	typ = NULL;
+	Set		types = NULL;
 	Tuple	arg_list, tup;
 	Forset	fs1, fs2;
 	int		exists;
@@ -608,9 +609,10 @@ static Tuple valid_op_types(Symbol opn, Node expn)		 /*;valid_op_types*/
 		else {
 			types = set_new(0);
 			FORSET(t=(Symbol), possible_types, fs1);
-				if(root_type(t) == symbol_boolean || is_array(t)
-				  && no_dimensions(t) == 1
-				  && root_type((Symbol)(component_type(t))) == symbol_boolean)
+				if(root_type(t) == symbol_boolean
+					|| (is_array(t)
+				  		&& no_dimensions(t) == 1
+				  		&& root_type((Symbol)(component_type(t))) == symbol_boolean))
 					types = set_with(types, (char *) t);
 			ENDFORSET(fs1);
 		}
@@ -618,8 +620,10 @@ static Tuple valid_op_types(Symbol opn, Node expn)		 /*;valid_op_types*/
 	else if (typ == symbol_order_type) { /* Comparison operators.*/
 		exists = FALSE;
 		FORSET(t=(Symbol), possible_types, fs1);
-			if (is_scalar_type(t) || is_array(t) && no_dimensions(t) == 1
-		      && is_discrete_type((Symbol)component_type(t))) {
+			if (is_scalar_type(t)
+				|| (is_array(t)
+					&& no_dimensions(t) == 1
+		      		&& is_discrete_type((Symbol)component_type(t)))) {
 				types = set_new1((char *) symbol_boolean);
 				exists = TRUE;
 				break;
@@ -636,7 +640,7 @@ static Tuple valid_op_types(Symbol opn, Node expn)		 /*;valid_op_types*/
 		 */
 		char *msg = emalloct(100, "valid-op-types-msg");
 
-		sprintf(msg, "at loc: %d, nature: %s, value: %s",
+		sprintf(msg, "at loc: %p, nature: %s, value: %s",
 		  typ, nature_str(NATURE(typ)), ORIG_NAME(typ) );
 		errmsg_str("system error: strange op type %", msg, "none", arg1);
 		efreet(msg, "valid-op-types-msg");
@@ -2042,7 +2046,7 @@ static void bind_arg(Node actual, Symbol f_type, int f_mode, int i)/*;bind_arg*/
 		 * check for conversion explicitly here, as is_variable() no
 		 * longer allows conversions.
 		 */
-		!(is_variable(a) || N_KIND(a)==as_convert && is_variable(N_AST2(a)))) {
+		!(is_variable(a) || (N_KIND(a)==as_convert && is_variable(N_AST2(a))))) {
 		errmsg_str_num("% actual parameter no. % in call is not a variable",
 		  nature_str(f_mode), i, "6.4.1", actual);
 	}

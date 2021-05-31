@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 #include "config.h"
 #include "ivars.h"
 #include "slot.h"
@@ -24,13 +25,12 @@
 int heap_store_offset = 0;
 #endif
 
-static void fold_lower(char *);
 static void fold_upper(char *);
 
 /* global variable needed for imain.c, derived from generator */
 FILE *efopen();
 
-main(int argc, char **argv)											/*;main*/
+int main(int argc, char **argv)											/*;main*/
 {
 	int         c, i, n, status;
 	int         errflg = 0, nobuffer = 0;
@@ -43,7 +43,6 @@ main(int argc, char **argv)											/*;main*/
 	char	*t_name;
 	Axq		axq;
 	char	*main_unit = (char *)0;
-	char 	*tname;
 
 	rr_flag = FALSE;
 	max_mem = MAX_MEM;

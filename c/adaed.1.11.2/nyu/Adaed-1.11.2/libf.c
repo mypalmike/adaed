@@ -103,7 +103,7 @@ long read_init(IFILE *ifile)								/*;read_init*/
 	 * read first word in file that may have offset to slot info.
 	 */
 
-	long  pos, start;
+	long  pos;
 	int   nr;
 
 	nr = fread((char *) &pos, sizeof(long), 1, ifile->fh_file);

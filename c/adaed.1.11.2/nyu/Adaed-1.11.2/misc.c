@@ -112,7 +112,7 @@ void smalloc_list()
 	char **st;
 	st = smalloc_table;
 	for (i = 0; i < smalloc_blocks; i++) {
-		printf("%d %ld %x\n", i, *st, *st);
+		printf("%d %ld %x\n", i, (long)*st, (unsigned int)*st);
 		st++;
 	}
 }
@@ -512,8 +512,7 @@ IFILE *ifopen(char *filename, char *suffix, char *mode, int pass)	/*;ifopen*/
 	FILE  *file;
 	char  modec;
 	char  *fname;
-	long  s = 0L;
-	int   nr, opened = FALSE, error = FALSE;
+	int   nr, error = FALSE;
 	IFILE  *ifile;
 #ifdef IBM_PC
 	char *t_name;

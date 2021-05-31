@@ -133,8 +133,8 @@ void module_body_id(int mod_nature, Node name_node)  /*;module_body_id*/
 	 * }
 	 */
 	nat = NATURE(mod_name);
-	if (mod_nature == na_package
-	  && (nat == na_package_spec || nat == na_generic_package_spec)
+	if ((mod_nature == na_package
+	  	&& (nat == na_package_spec || nat == na_generic_package_spec))
 	  || (mod_nature == na_task_type && (nat == na_task_type_spec
 	  || nat == na_task_obj_spec 
 	  || (nat == na_obj && NATURE(TYPE_OF(mod_name)) == na_task_type_spec)))) {
@@ -355,8 +355,9 @@ void module_body(int nat, Node block_node)	/*;module_body*/
 			pUnits[unit_number(unit_name)]->libInfo.obsolete = strjoin("ok", "");
 #endif
 		}
-		if (streq(utnam, "bo") || streq(utnam, "su")
-		  && streq(unit_name_name(unit_name), unit_name_names(unit_name)) ){
+		if (streq(utnam, "bo")
+			|| (streq(utnam, "su")
+		  		&& streq(unit_name_name(unit_name), unit_name_names(unit_name)))){
 			spec_name = strjoin("sp", unit_name_name (unit_name));
 			if (lib_unit_get(spec_name) != (char *)0
 			  && streq(lib_unit_get(spec_name) , AISFILENAME)
@@ -564,6 +565,8 @@ int is_private(Symbol type_mark)							/*;is_private*/
 		ENDFORDECLARED(fd1);
 		return FALSE;
 	}
+
+	return FALSE;
 }
 
 int is_limited_type(Symbol type_mark)	/*;is_limited_type*/

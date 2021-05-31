@@ -11,6 +11,7 @@
 
 /* Include standard header modules */
 #include <stdlib.h>
+#include <string.h>
 #include <setjmp.h>
 #include "config.h"
 #include "int.h"
@@ -28,7 +29,6 @@ static void update_address(int *);
 static void image_attribute();
 static void value_attribute();
 static int same_dimensions(int *, int *);
-static int compare_fields_record(int *, int *, int *);
 
 void main_attr(int attribute, int dim)						/*;attribute*/
 {
@@ -755,7 +755,8 @@ void type_elaborate(int flag, int bse, int off)			/*;type_elaborate*/
 	 *  ptr in memory to the beginning of the type template.
 	 */
 
-	int    template_size, nb_field, variant_size, component_size, nb_fixed,
+	int    template_size = 0;
+	int    nb_field, variant_size, component_size, nb_fixed,
 	templ_bse, templ_off, temporary, last_offset, first_case,
 	*case_table_ptr, *field_table_ptr, offset, lbd, ubd, lng;
 	float  fval_high,fval_low;
@@ -1575,7 +1576,9 @@ void array_slice()										/*;array_slice*/
 
 void array_catenate()									/*;array_catenate*/
 {
-	int     catsize, val_low, val_high, rlow, rhigh, index_kind;
+	int     catsize, val_high, rhigh, index_kind;
+	int		val_low = 0;
+	int		rlow = 0;
 
 	POP_ADDR(bse, off);	/* type of result for qual */
 	ptr = ADDR(bse, off);
@@ -1778,64 +1781,4 @@ static int same_dimensions(int *temp1, int *temp2)		/*;same_dimensions */
 			return (FALSE) ;
 	}
 	return TRUE ;
-}
-
-static int compare_fields_record (int *v_ptr1, int *v_ptr2, int *itemplate)
-													/*;compare_fields_record*/
-{
-	/* this procedure allows the comparison of record.
-	 * The comparison is not straightfoward if one in unconstrained
-	 * and the other is constrained or if there are variant parts.
-	 * This procedure was not intended to be completed. It was just a
-	 * test  to solve one acv test of c3.
-	 * This procedure is not called from the Ada machine because it
-	 * slows down the comparison.
-	 * Nevertheless, this case has to be taken into account for future
-	 * work
-	*/
-	int length1, *ptr1, *ptr2 ;
-	int i, nb_field, type_base, type_off, *type_ptr, *field_ptr;
-	int field_offset;
-
-	ptr1 = v_ptr1;
-	ptr2 = v_ptr2;
-
-	switch TYPE (itemplate) {
-	case TT_RECORD:
-		nb_field = RECORD(itemplate)->nb_field;
-		field_ptr = itemplate + WORDS_RECORD;
-		for (i = 1; i <= nb_field; i++) {
-			field_offset = *field_ptr;
-			field_ptr = field_ptr + 1;
-			type_base = *field_ptr;
-			type_off = *++field_ptr;
-			type_ptr = ADDR(type_base, type_off);
-			if (!compare_fields_record (v_ptr1 + field_offset,
-			    v_ptr2 + field_offset, type_ptr)) {
-				return FALSE;
-			}
-			field_ptr++;
-		}
-		return TRUE;
-
-	case TT_U_RECORD:
-	case TT_C_RECORD:
-	case TT_D_RECORD:
-		length1 = SIZE (itemplate);
-		ptr1 += 1; /* skip constraint bit */
-		ptr2 += 1;
-		length1 -= 1;
-		break;
-
-	default:
-		length1 = SIZE (itemplate);
-		break;
-	}
-	while (length1-- > 0) {
-		val1 = *ptr1++;
-		val2 = *ptr2++;
-		if (val1 != val2)
-			return FALSE;
-	}
-	return TRUE;
 }

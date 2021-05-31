@@ -14,7 +14,8 @@
 #ifdef __GNUG__
 #define WAITPARM (int*)
 #else
-#define WAITPARM (union wait*)
+#define WAITPARM (int*)
+/* #define WAITPARM (union wait*) */
 #endif
 #include "config.h"
 #include "adamrgprots.h"
@@ -37,6 +38,9 @@
 #include "time.h"
 #include <sys/resource.h>
 #endif
+
+#include <unistd.h>
+#include <sys/stat.h>
 
 static int check_status(int, char *, char *);
 static char *getsym(char *, char *);
@@ -68,7 +72,7 @@ int     exec_trace = 0;	/* set to print generated command lines */
 
 char   *base_name;
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	int     c,fp;
 	int     status, ok = TRUE;
@@ -80,13 +84,11 @@ main(int argc, char **argv)
 	char   *list_name;
 	char   *source_name;
 	char   *msg_name;
-	char   *tmp_name;
 	char   *s_temp;
 	char   *l_name;
 	char   *basep;
 	int	   prefix_len, base_len, suffix_len;
 	char   *lib_opt_str, *main_unit_name;
-	char   *object_files = "";
 	char   *front_options, *gen_options;
 	int     bind_opt = 0, main_opt = 0, save_msg_opt = 0 ;
 	int     list_opt = FALSE;   /* set to generate a listing */
@@ -424,6 +426,8 @@ static int check_status(int pstatus, char *phase, char *filename)
 		maxstatus = RC_ABORT;
 		return (FALSE);
 	}
+
+	return FALSE;
 }
 
 static void arg_dump()											/*;arg_dump*/

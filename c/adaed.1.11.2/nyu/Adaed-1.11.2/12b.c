@@ -163,7 +163,7 @@ void instantiate_pack_tree(Node node, Symbolmap type_map,
 		/* Attach tpe_map to node for eventual code emission */
 		ltup = tup_new(2);
 		ltup[1] = (char *) rename_map;
-		ltup[2] = (char *) needs_body(gen_name);
+		ltup[2] = (char *)(long long) needs_body(gen_name);
 		N_AST4(new_b_node) = new_instance_node(ltup);
 	}
 	/* In any case, emit the spec node before the body */
@@ -456,7 +456,8 @@ static void update_one_entry(Symbol old_n, Symbol new_n, Symbolmap rename_map)
 	 */
 
 	int		nat, ii, nn;
-	Tuple	tup, gen_list, form_list, new_gen_list, new_form_list, otup, ntup;
+	Tuple	tup, gen_list, form_list, new_gen_list, otup, ntup;
+	Tuple new_form_list = NULL;
 	Node	body_node, decl_node, opt_priv_node, node, n, d;
 	Fortup	ft1;
 	Tuple	discr_map, newdiscr_map, newsig, constrain_list, new_constrain_list;
@@ -1100,9 +1101,9 @@ static int scan_instance(Node node) 					/*;scan_instance */
 
 	if ( N_KIND(node) == as_function_instance
 	  || N_KIND(node) == as_procedure_instance 
-	  || N_KIND(node) == as_package_instance)
+	  || N_KIND(node) == as_package_instance) {
 		if (check_recursive_instance(node)) return TRUE;
-	else {
+	} else {
 		nkind = N_KIND(node);
 		for (i = 1; i <= 4; i++) {
 			inode = (Node)0;

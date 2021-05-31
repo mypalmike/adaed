@@ -86,7 +86,7 @@ void initialize_representation_info(Symbol type_name, int tag)
 Tuple	rctup;
 if (tag == TAG_RECORD) {
    rctup = tup_new(7);
-   rctup[1] = (char *) tag;
+   rctup[1] = (char *)(long long) tag;
    rctup[2] = (char *) rc_unset;
    rctup[4] = (char *) rc_unset;
    rctup[6] = (char *) rc_unset;
@@ -94,13 +94,13 @@ if (tag == TAG_RECORD) {
 else if (tag == TAG_TASK	|| tag == TAG_ACCESS	||
 		 tag == TAG_ARRAY	|| tag == TAG_ENUM) {
    rctup = tup_new(5);
-   rctup[1] = (char *) tag;
+   rctup[1] = (char *)(long long) tag;
    rctup[2] = (char *) rc_unset;
    rctup[4] = (char *) rc_unset;
 }
 else {			/*  TAG_INT  || TAG_FIXED */
    rctup = tup_new(3);
-   rctup[1] = (char *) tag;
+   rctup[1] = (char *)(long long) tag;
    rctup[2] = (char *) rc_unset;
 }
 RCINFO(type_name) = rctup;
@@ -196,7 +196,8 @@ int		i,n;
 	FORCED(derived_type) = FALSE;
 	not_chosen_put(derived_type, (Symbol)0);
 }
-already_forced(Symbol type_name)				 /*; already_forced */
+
+int already_forced(Symbol type_name)				 /*; already_forced */
 {
 int	result;
 result = FORCED(type_name);
@@ -308,7 +309,7 @@ static char *default_representation(Symbol type_name,int position)
 {
    switch (position) {
       case(size_position):
-	   return (char *) default_size_value(type_name);
+	   return (char *)(long long) default_size_value(type_name);
 
       case(storage_size_position):
           if (is_task_type(type_name) || is_access(type_name)) {
@@ -319,7 +320,7 @@ static char *default_representation(Symbol type_name,int position)
 #endif
 		  }
           else if (is_fixed_type(type_name)) {
-              return (char *) default_size_value(type_name);
+              return (char *)(long long) default_size_value(type_name);
           }
           else if (is_array(type_name)) {
           /* (pack_position) */
@@ -334,6 +335,8 @@ static char *default_representation(Symbol type_name,int position)
        case(alignment_position):
          return (char *) default_record_value(type_name);
    }
+
+   return NULL;
 }
  
 /*
@@ -454,7 +457,7 @@ static void apply_length_clause(int attr_kind, Symbol type_name, Node value)
 	current_rep = RCINFO(b_type);
    if (attr_kind == ATTR_SIZE) {
 	  current_rep[size_position] = (char *) rc_set;
-	  current_rep[size_position+1] = (char *) INTV((Const) N_VAL(value));
+	  current_rep[size_position+1] = (char *)(long long) INTV((Const) N_VAL(value));
    }
    else if (attr_kind == ATTR_STORAGE_SIZE) { 
 	  current_rep[storage_size_position] = (char *) rc_set;
@@ -524,7 +527,7 @@ int		i,n;
   	  rep_lit_map = tup_new(n * 2);
   	  for (i=1;i<=n;i++) {
     	     rep_lit_map[2*i-1] = strjoin(old_lit_map[2*i-1], "");;
-    	     rep_lit_map[2*i] = (char *)  INTV((Const)N_VAL((Node)seq[i]));
+    	     rep_lit_map[2*i] = (char *)(long long) INTV((Const)N_VAL((Node)seq[i]));
 	  }
           apply_enum_clause(type_name, rep_lit_map);
   	}
@@ -636,9 +639,9 @@ FORTUP(comp_clause=(Node), N_LIST(comp_clause_list), ft1)
       if (is_static_expr(first_bit) && is_static_expr(last_bit)) {
 	 loc_list = tup_new(4);
 	 loc_list[1] = field;
-	 loc_list[2] = (char *) rel_addr_val;
-	 loc_list[3] = (char *) INTV((Const) N_VAL(first_bit));
-	 loc_list[4] = (char *) INTV((Const) N_VAL(last_bit));
+	 loc_list[2] = (char *)(long long) rel_addr_val;
+	 loc_list[3] = (char *)(long long) INTV((Const) N_VAL(first_bit));
+	 loc_list[4] = (char *)(long long) INTV((Const) N_VAL(last_bit));
 	 location_lists = tup_with(location_lists, (char *)loc_list);
        }
        else  {
@@ -686,18 +689,18 @@ static void apply_record_clause(Symbol type_name,
       record_size = max_val(record_size, (offset + field_size));
 	  tup4 = tup_new(4);
 	  tup4[1] = (char *) dcl_get(decls, field);
-	  tup4[2] = (char *) position;
-	  tup4[3] = (char *) first_bit;
-	  tup4[4] = (char *) (first_bit + field_size -1);;
+	  tup4[2] = (char *)(long long) position;
+	  tup4[3] = (char *)(long long) first_bit;
+	  tup4[4] = (char *)(long long) (first_bit + field_size -1);;
       attribute_list = tup_with(attribute_list, (char *) tup4);
    ENDFORTUP(ft1);
    tup2 = tup_new(2);
-   tup2[1] = (char *) modulus_value;
+   tup2[1] = (char *)(long long) modulus_value;
    tup2[2] = (char *) attribute_list;
    current_rep[alignment_position] = (char *) rc_set;
    current_rep[alignment_position+1] = (char *) tup2;
    current_rep[size_position] = (char *) rc_set;
-   current_rep[size_position+1] = (char *) record_size;
+   current_rep[size_position+1] = (char *)(long long) record_size;
    RCINFO(b_type) = current_rep;
 }
  
@@ -750,12 +753,12 @@ for (i=1;i<=n; i+=2) {
     if ((Symbol) NOT_CHOSEN[i]== sym) {
 	   NOT_CHOSEN[i] = NOT_CHOSEN[n-1];
 	   NOT_CHOSEN[i+1] = NOT_CHOSEN[n];
-	   NOT_CHOSEN[0] = (char *) n-2;
+	   NOT_CHOSEN[0] = (char *)(long long) n-2;
        return;
     }
 }
 }
-static default_size_value(Symbol type_name)			/*; default_size_value */
+static int default_size_value(Symbol type_name)			/*; default_size_value */
 /*
  * Robert might want to add to this routine.
  *
@@ -970,9 +973,9 @@ FORTUP(field_name=(Symbol),field_names, ft1);
    current_offset = current_offset + field_size + padding;
    tup4 = tup_new(4);
    tup4[1] = (char *) field_name;
-   tup4[2] = (char *) position;
-   tup4[3] = (char *) first_bit;
-   tup4[4] = (char *) (first_bit + field_size -1);
+   tup4[2] = (char *)(long long) position;
+   tup4[3] = (char *)(long long) first_bit;
+   tup4[4] = (char *)(long long) (first_bit + field_size -1);
    attribute_list = tup_with (attribute_list, (char *) tup4);
 ENDFORTUP(ft1);
        

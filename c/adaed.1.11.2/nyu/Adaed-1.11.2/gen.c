@@ -28,15 +28,11 @@
 
 static void gen_kfc(int, int, long, char *);
 static void gen_krc(int, int, float, char *);
-static void gen_r(int, Explicit_ref);
 static void gop_int(int, int, int, int, char *);
 static void gop_fix(int, int, int, long, char *);
 static void gop_flt(int, int, int, float, char *);
 static void gop_ref(int, int, int, Explicit_ref, char *);
 static void gop_sym(int, int, int, Symbol, char *);
-#ifdef DEBUG
-static void undone_op(int, char *);
-#endif
 static char *g_kind(int);
 static int adjust(int);
 static int int_adjust(int);
@@ -230,11 +226,6 @@ void gen_kvc(int opc, int k, Const ref, char *c)					/*;gen_kvc*/
 	}
 }
 
-static void gen_r(int opc, Explicit_ref ref)						/*;gen_r*/
-{
-	gen_rc(opc, ref, (char *)0);
-}
-
 void gen_rc(int opc, Explicit_ref ref, char *c)					/*;gen_rc*/
 {
 	gop_ref(opc, 0, OP_REF, ref, c);
@@ -286,16 +277,6 @@ static void gop_sym(int opc, int k, int ka, Symbol arg, char *c)	/*;gop_sym*/
 	peep_hole(&op_next);
 }
 
-#ifdef DEBUG
-static void undone_op(int op, char *np)						/*;undone_op*/
-{
-	/* print name of generation procedure and name of operation */
-	extern char *opdesc_name;
-	opdesc(op);
-	printf("op %s %s\n", np, opdesc_name);
-}
-#endif
-
 void assemble(Op op)										/*;assemble*/
 {
 	int	code;
@@ -343,7 +324,7 @@ void assemble(Op op)										/*;assemble*/
 		FORTUP(new_lab = (Symbol), eqtup, ft1);
 			/*loop forall new_lab in (EQUAL(lab_name)?{}) with lab_name do*/
 			newtup = labelmap_get(new_lab);
-			newtup[LABEL_POSITION] = (char *) PC();
+			newtup[LABEL_POSITION] = (char *)(long long) PC();
 			patch_tup = (Tuple) labtup[LABEL_PATCHES];
 			FORTUP(loc = (unsigned int), patch_tup, ft2);
 				/*loop forall loc in (PATCHES(new_lab)?{}) do*/
@@ -514,7 +495,7 @@ void assemble(Op op)										/*;assemble*/
 			if (loc == 0) {
 				/*PATCHES(location) = (PATCHES(location)?{}) with PC;*/
 				labtup[LABEL_PATCHES] = (char *) tup_with( (Tuple)
-				  labtup[LABEL_PATCHES], (char *)PC());
+				  labtup[LABEL_PATCHES], (char *)(long long)PC());
 				loc= 0;
 			}
 			/*instruction = [code+adj, loc];*/

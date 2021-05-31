@@ -173,25 +173,25 @@ void load_library(Axq axq)									/*;load_library*/
 		m = getnum(ifile, "stub-file-size");
 		tup = tup_new(m);
 		for (j = 1; j <= m; j++)
-			tup[j] = (char *) getnum(ifile, "stub-files");
+			tup[j] = (char *)(long long) getnum(ifile, "stub-files");
 		stubtup[4] = (char *) tup;
 	}
 	n = getnum(ifile, "precedes-map-size");
 	PRECEDES_MAP = tup_new(n);
 	for (i = 1; i <= n; i += 2) {
-		PRECEDES_MAP[i] = (char *) getnum(ifile, "precedes-map-ent");
+		PRECEDES_MAP[i] = (char *)(long long) getnum(ifile, "precedes-map-ent");
 		m = getnum(ifile, "precedes-map-set-size");
 		precedes = set_new(m);
 		for (j = 1; j <= m; j++) {
 			precedes = set_with(precedes,
-			  (char *) getnum(ifile, "precedes-map-ent"));
+			  (char *)(long long) getnum(ifile, "precedes-map-ent"));
 		}
 		PRECEDES_MAP[i+1] = (char *) precedes;
 	}
 	n = getnum(ifile, "compilation_table_size");
 	compilation_table = tup_new(n);
 	for (i = 1; i <= n; i++)
-		compilation_table[i] = (char *) getnum(ifile, "compilation-table-ent");
+		compilation_table[i] = (char *)(long long) getnum(ifile, "compilation-table-ent");
 	/* late_instances */
 	n = getnum(ifile, "late-instances-size");
 	late_instances = tup_new(n);
@@ -201,14 +201,14 @@ void load_library(Axq axq)									/*;load_library*/
 	interfaced_procedures = tup_new(n);
 	for (i = 1; i <= n; i += 2) {
 		interfaced_procedures[i] =
-		  (char *) getnum(ifile, "interfaced-procedures-num");
+		  (char *)(long long) getnum(ifile, "interfaced-procedures-num");
 		interfaced_procedures[i+1]= getstr(ifile, "interfaced-procedures-str");
 	}
 	interface_counter = getnum(ifile, "interface-counter");
 	n = getnum(ifile, "units-size");
 	for (i = 1; i <= n; i++) {
 		pUnits[i]->libInfo.currCodeSeg =
-		  (char *) getnum(ifile, "current-code-seg");
+		  (char *)(long long) getnum(ifile, "current-code-seg");
 	}
 	n = getnum(ifile, "units-size");
 	/* read local_reference_map for each unit (tuple of symbols and offsets) */
@@ -358,7 +358,7 @@ static void get_local_ref_maps(IFILE *ifile, int units)	/*;get_local_ref_map*/
 			sym = getsymref(ifile, "local-ref-map-sym");
 			local_ref_map[i] = (char *) sym;
 			off = getnum(ifile, "local-ref-map-off");
-			local_ref_map[i+1] = (char *) off;
+			local_ref_map[i+1] = (char *)(long long) off;
 		}
 	}
 }
@@ -721,7 +721,7 @@ int read_stub_short(char *fname, char *uname, char *ext)	/*;read_stub_short*/
 			ctup = tup_new(n);
 			for (i = 1; i <= n; i++) {
 				cent = (Tuple) tup_new(2);
-				cent[1] = (char *) getnum(ifile, "stub-cent-1");
+				cent[1] = (char *)(long long) getnum(ifile, "stub-cent-1");
 				cn = getnum(ifile, "stub-cent-2-size"); 
 				cntup = tup_new(cn);
 				for (ci = 1; ci <= cn; ci++) {
@@ -802,8 +802,8 @@ void collect_stub_node_units(int si)				/*;collect_stub_node_units*/
 	units_tup = tup_new(0);
 	for (i = 1; i <= n; i++) {
 		sym = (Symbol) tup[i];
-		if (!tup_mem((char *)S_UNIT(sym), units_tup))
-			units_tup = tup_with(units_tup, (char *)S_UNIT(sym));
+		if (!tup_mem((char *)(long long)S_UNIT(sym), units_tup))
+			units_tup = tup_with(units_tup, (char *)(long long)S_UNIT(sym));
 	}
 	stubtup[4] = (char *) units_tup;
 }

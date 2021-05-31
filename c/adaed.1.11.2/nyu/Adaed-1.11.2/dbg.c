@@ -25,7 +25,7 @@ void zpds(Segment seg)											/*;zpds*/
 
 	int i, *data;
 
-	printf("Segment %d x%x ", (int)seg, seg);
+	printf("Segment %d x%p ", (int)seg, seg);
 	if (seg->seg_kind == SEGMENT_KIND_CODE) printf(" code");
 	else printf(" data");
 	printf(" size %d pos %d max_pos %d dim %d ext %d\n", seg->seg_size,
@@ -65,7 +65,7 @@ void zptt(Segment seg)											/*;zptt*/
 		break;
 
 	case TT_FL_RANGE: /* Floating point template */
-		printf("tt_fl_range %d %g fllow %g flhigh %g\n",
+		printf("tt_fl_range %d fllow %g flhigh %g\n",
 		   FL_RANGE(tti)->object_size,
 		   FL_RANGE(tti)->fllow,
 		   FL_RANGE(tti)->flhigh);
@@ -88,16 +88,16 @@ void zptt(Segment seg)											/*;zptt*/
 	case TT_E_RANGE:
 		printf("tt_enum%d elow %d ehigh %u ebase %u eoff %d\n",
 		  tti->object_size,
-		  E_RANGE(tti)->elow, E_RANGE(tti)->ehigh);
+		  E_RANGE(tti)->elow, E_RANGE(tti)->ehigh, E_RANGE(tti)->ebase, E_RANGE(tti)->eoff);
 		break;
 
 	case TT_FX_RANGE: 	/* Fixed point template */
 
-		printf("tt_fx_range %d small_exp_2 %d small_exp_5\n",
+		printf("tt_fx_range %d small_exp_2 %d small_exp_5 %d\n",
 		  tti->object_size,
 		  FX_RANGE(tti)->small_exp_2,
 		  FX_RANGE(tti)->small_exp_5);
-		printf(" %d fxlow %ld %ld fxhigh\n",
+		printf(" fxlow %ld %ld fxhigh\n",
 		  FX_RANGE(tti)->fxlow,
 		  FX_RANGE(tti)->fxhigh);
 		break;
@@ -115,7 +115,7 @@ void zptt(Segment seg)											/*;zptt*/
 
 	case TT_C_ARRAY: /* Unconstrained or constrained array template */
 
-		printf("tt_u_array %d dim %d component_base %d component_offset %u \n",
+		printf("tt_u_array %d component_base %d component_offset %u \n",
 		  tti->object_size,
 		  ARRAY(tti)->component_base,
 		  ARRAY(tti)->component_offset);
@@ -151,7 +151,7 @@ void zptt(Segment seg)											/*;zptt*/
 
 	case TT_U_RECORD: 	/* Template for unconstrained record */
 
-		printf("tt_u_record %d nb_field_u %d nb_discr_u %d nb_fixed_u \n",
+		printf("tt_u_record %d nb_field_u %d nb_discr_u %d nb_fixed_u %d\n",
 		  tti->object_size, U_RECORD(tti)->nb_field_u,
 		  U_RECORD(tti)->nb_discr_u,
 		  U_RECORD(tti)->nb_fixed_u);
@@ -163,7 +163,7 @@ void zptt(Segment seg)											/*;zptt*/
 		break;
 
 	case TT_V_RECORD:
-		printf("tt_v_record %d nb_field_u %d nb_discr_u %d nb_fixed_u \n",
+		printf("tt_v_record %d nb_field_u %d nb_discr_u %d nb_fixed_u %d\n",
 		  tti->object_size, U_RECORD(tti)->nb_field_u,
 		  U_RECORD(tti)->nb_discr_u,
 		  U_RECORD(tti)->nb_fixed_u);
@@ -174,7 +174,7 @@ void zptt(Segment seg)											/*;zptt*/
 
 	case TT_C_RECORD: 	/* Template for constrained record */
 
-		printf("tt_c_record %d cbase %d coff %d nb_discr_c \n",
+		printf("tt_c_record %d cbase %d coff %d nb_discr_c %d\n",
 		  C_RECORD(tti)->object_size,
 		  C_RECORD(tti)->cbase,
 		  C_RECORD(tti)->coff,
@@ -183,7 +183,7 @@ void zptt(Segment seg)											/*;zptt*/
 
 	case TT_D_RECORD: /* Template for types depending on discriminants */
 
-		printf("tt_d_record %d dbase %d doff %d nb_discr_d \n",
+		printf("tt_d_record %d dbase %d doff %d nb_discr_d %d\n",
 		  D_TYPE(tti)->object_size,
 		  D_TYPE(tti)->dbase,
 		  D_TYPE(tti)->doff,

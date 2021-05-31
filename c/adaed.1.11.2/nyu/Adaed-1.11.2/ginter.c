@@ -67,7 +67,7 @@ void geninter(Tuple to_bind)									/*;geninter*/
 #ifdef IBM_PC
 	file = efopen("iface.c", "w", "t");
 #endif
-	fprintf(file, code);
+	fprintf(file, "%s", code);
 	fclose(file);
 
 #ifdef SUPPORT_PRAGMA_INTERFACE

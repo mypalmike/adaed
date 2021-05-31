@@ -12,6 +12,7 @@
 #include "ada.h"
 #include "adared.h"
 #include "setprots.h"
+#include "nodesprots.h"
 #include "smiscprots.h"
 #include "prsutilprots.h"
 #include "errsprots.h"

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "config.h"
 #include "int.h"
 #include "segment.h"
@@ -25,7 +26,6 @@
 
 static void init_predef();
 static void init_library(IFILE *, char *);
-static char *unit_name_name(char *);
 static int *unit_list_new();
 static void unit_list_copy(int *, int *);
 static int unit_list_next(int *);
@@ -49,7 +49,9 @@ static char  **file_number;
 static int  **PRECEDES_MAP;
 static char  **unit_names;
 static int     unit_count;
+#ifndef INTERFACE
 static int   interfaced_unit = 0;
+#endif
 static int   obsolete_error = FALSE;
 
 /* The following struct is used main a list of the units actually loaded. */
@@ -79,7 +81,7 @@ static void init_predef()										/*;init_predef*/
 	  "unit_names");
 	PRECEDES_MAP = (int **) emalloct(sizeof(char **) *(unit_count + 1),
 	  "precedes_map");
-	PRECEDES_MAP[0] =  (int *) unit_count;
+	PRECEDES_MAP[0] =  (int *)(long long) unit_count;
 	file_number = (char **) emalloct(sizeof(char **) *(unit_count + 1),
 	  "file_number");
 	for (i = 1; i <= unit_count; i++) {
@@ -105,7 +107,6 @@ void load_lib(char *filename, IFILE *libfile, Axq axq, char *main_unit,
 	int     nmain_units;
 	char   *idle_task_name, *unit_file;
 	IFILE * axqfile;
-	char    exename[100];
 	char   *PREDEFNAME;
 	char   *file_name, *l_name, *t_name;
 
@@ -156,6 +157,7 @@ void load_lib(char *filename, IFILE *libfile, Axq axq, char *main_unit,
          * the executable which has been built with the procedure interface
          */
 		if (interfaced_unit != 0) {
+			char exename[100];
 			sprintf(exename,"%s%s%s.exe",filename,DIR_DELIMITER,
 			  file_number[interfaced_unit]);
 			execvp(exename,argv);
@@ -331,26 +333,6 @@ static void init_library(IFILE *ifile, char *main_unit)		/*;init_library*/
 		PRECEDES_MAP[unumber] = precedes;
 	}
 	return;
-}
-
-static char *unit_name_name(char *u)						/*;unit_name_name*/
-{
-	int     n;
-	char   *s1, *s2;
-
-	n = strlen(u);
-	if (n <= 2)
-		return (char *) 0;
-
-	s1 = u + 2;			/* point to start of name */
-	s2 = strchr(s1, '.');	/* look for dot after first name */
-	if (s2 == (char *) 0)	/* if no dot take rest of string */
-		s2 = u + n;		/* find end */
-	n = s2 - s1;
-	s2 = smalloc((unsigned) n + 1);
-	strncpy(s2, s1, n);
-	s2[n] = '\0';		/* terminate result */
-	return (s2);
 }
 
 long load_slots(char *fname, IFILE **ifile, Axq axq)			/*;load_slots*/

@@ -43,7 +43,7 @@ static Rational fx_max (Rational, Rational);
 static Const test_expr(int);
 
 extern Const int_const(), real_const(), rat_const();
-extern ADA_MIN_INTEGER;
+extern int ADA_MIN_INTEGER;
 
 /* TBSL:provide proper link to ADA_SMALL_REAL*/
 #define ADA_SMALL_REAL 0.1
@@ -290,7 +290,8 @@ static Const const_fold(Node node)							/*;const_fold*/
 static Const fold_unop(Node node)								/*;fold_unop*/
 {
 	Node	opn, oplist;
-	Const	result, op1;
+	Const	result = NULL;
+	Const	op1;
 	int	op1_kind;
 	Symbol	sym;
 
@@ -373,9 +374,10 @@ static Const fold_unop(Node node)								/*;fold_unop*/
 static Const fold_op(Node node)									/*;fold_op*/
 {
 	Node	opn, arg1, arg2, oplist;
-	Const	result, op1, op2, tryc;
+	Const 	op1, op2, tryc;
+	Const	result = NULL;
 	Symbol	sym, op_name;
-	int	*uint;
+	int	*uint = NULL;
 	int	rm;
 	Tuple	tup;
 	int	res, overflow;
@@ -792,7 +794,8 @@ static Const fold_attr(Node node)		/*;fold_attr*/
 	Node	attr_node, typ_node, arg_node, f_node, l_node, l_n, h_n;
 	Symbol	typ1;
 	int		attrkind, is_t_n, rv, i, len, max;
-	Const	first, last, op1, result, lo, hi;
+	Const	first, last, op1, lo, hi;
+	Const	result = NULL;
 	Tuple	tsig, sig, l;
 	Span	save_span;
 
@@ -859,7 +862,7 @@ static Const fold_attr(Node node)		/*;fold_attr*/
 	/* They are evaluable statically only if the subtype typ1
 	 * itself is static.
 	 */
-	if (is_type(typ1) && is_static_subtype(typ1)
+	if ((is_type(typ1) && is_static_subtype(typ1))
 	  || is_task_type(TYPE_OF(typ1))
 	  || attrkind == ATTR_T_CONSTRAINED || attrkind == ATTR_O_CONSTRAINED) {
 		;    /* try to evaluate */
@@ -922,7 +925,7 @@ static Const fold_attr(Node node)		/*;fold_attr*/
 		tsize = strlen(image);
 		tup = tup_new(tsize);
 		for (i = 1; i <= tsize; i++)
-			tup[i] = (char *) image[i-1];
+			tup[i] = (char *)(long long) image[i-1];
 
 		if (N_AST1_DEFINED(N_KIND(node))) N_AST1(node) = (Node) 0;
 		if (N_AST2_DEFINED(N_KIND(node))) N_AST2(node) = (Node) 0;
@@ -1036,8 +1039,8 @@ static Const fold_attr(Node node)		/*;fold_attr*/
 	}
 	else if (attrkind == ATTR_O_CONSTRAINED || attrkind == ATTR_T_CONSTRAINED) {
 		/* Attribute is true on constants and on -in- parameters */
-		if ((typ1 != (Symbol) 0) &&
-		    NATURE(typ1) == na_constant || NATURE(typ1) == na_in) {
+		if (((typ1 != (Symbol) 0) && NATURE(typ1) == na_constant)
+		 || NATURE(typ1) == na_in) {
 			result = int_const(1);
 		}
 		else if (!is_generic_type(typ1)) {
@@ -1064,7 +1067,8 @@ static Const fold_convert(Node node)						/*;fold_convert*/
 {
 	Node	typ2_node, opd_node;
 	Symbol	typ1, typ2; /* type2 is target type */
-	Const	opd, result;
+	Const	opd;
+	Const	result = NULL;
 
 	typ2_node = N_AST1(node);
 	opd_node = N_AST2(node);
@@ -1185,7 +1189,7 @@ static Const eval_qual_range(Node op1, Symbol op_type)		/*;eval_qual_range*/
  	*/
 	Node	lo, hi;
 	Const	op1_val, lo_val, hi_val;
-	int		c_error;
+	int		c_error = 0;
 	Tuple	numcon;
 	Rational	rop1_val;
 
@@ -1591,8 +1595,10 @@ static Const check_overflow(Node node, Const x)				/*check_overflow*/
 	 * converted to setl values.
 	 */
 
+#ifdef TBSL
 	int	attrkind;
 	Const	result;
+#endif
 
 	if (cdebug2 > 3) TO_ERRFILE("AT PROC :  check_overflow");
 

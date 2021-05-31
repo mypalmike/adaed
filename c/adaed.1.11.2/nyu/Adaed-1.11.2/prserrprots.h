@@ -8,3 +8,4 @@
 */
 
 void prserr(struct prsstack *);
+void add_to_top(struct prsstack *tok);

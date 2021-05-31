@@ -159,5 +159,5 @@ void gen_stub(Node stub_node)									/*;gen_stub*/
 		;
 
 	}
-	stubs_to_write = set_with(stubs_to_write, (char *) si);
+	stubs_to_write = set_with(stubs_to_write, (char *)(long long) si);
 }

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "config.h"
 #include "segment.h"
 #include "slot.h"
@@ -20,9 +21,11 @@
 #include "libfprots.h"
 
 static void load_library();
+#ifdef TBSL
 static void get_local_ref_maps(IFILE *, int);
 static long get_cde_slots(IFILE *, Axq);
 static void get_slot(IFILE *, char *);
+#endif
 static char *convert_date(char *);
 static char *unit_name_name(char *);
 static int is_subunit(char *);
@@ -36,7 +39,7 @@ IFILE *LIBFILE;
  */
 #endif
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
         int  c;
         int  lib_opt = FALSE;
@@ -209,6 +212,7 @@ static void load_library()								/*;load_library*/
 #endif
 }
 
+#ifdef TBSL
 static void get_local_ref_maps(IFILE *ifile, int units)	/*;get_local_ref_map*/
 {
 	int		unit, defined, i, off, n;
@@ -236,7 +240,9 @@ static void get_local_ref_maps(IFILE *ifile, int units)	/*;get_local_ref_map*/
 	}
 	printf("\n");
 }
+#endif
 
+#ifdef TBSL
 static long get_cde_slots(IFILE *file, Axq axq)				/*;get_cde_slots*/
 {
 	long	dpos;
@@ -254,7 +260,9 @@ static long get_cde_slots(IFILE *file, Axq axq)				/*;get_cde_slots*/
 	get_slot(file, "exceptions");
 	return dpos; /* return offset of start of slot info */
 }
+#endif
 
+#ifdef TBSL
 static void get_slot(IFILE *file, char *name)					/*;get_slot*/
 {
 	/* This procedure reads in the SLOTS information. 
@@ -283,6 +291,7 @@ static void get_slot(IFILE *file, char *name)					/*;get_slot*/
 	}
 	printf("\n");
 }
+#endif
 
 static char *convert_date(char *comp_date)					/*;convert_date*/
 {

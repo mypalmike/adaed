@@ -275,7 +275,8 @@ Symbol constrain_array(Symbol type_mark, Node constraint) /*;constrain_array*/
 {
 	int	i;
 	Symbol	new_array;
-	Tuple	indices, constraint_nodes, new_indices;
+	Tuple	indices, constraint_nodes;
+	Tuple	new_indices = NULL;
 
 	if (cdebug2 > 3) TO_ERRFILE("AT PROC :  constrain_array");
 
@@ -1126,14 +1127,15 @@ int check_discriminant(Node expn) /*;check_discriminant*/
 	nk = N_KIND(expn);
 	for (i = 1; i <= 4; i++) {
 		sub_expn = (Node)0;
-		if (i == 1)
+		if (i == 1) {
 			if (N_AST1_DEFINED(nk)) sub_expn = N_AST1(expn);
-		else if (i == 2)
+		} else if (i == 2) {
 			if (N_AST2_DEFINED(nk)) sub_expn = N_AST2(expn);
-		else if (i == 3)
+		} else if (i == 3) {
 			if (N_AST3_DEFINED(nk)) sub_expn = N_AST3(expn);
-		else if (i == 4)
+		} else if (i == 4) {
 			if (N_AST4_DEFINED(nk)) sub_expn = N_AST4(expn);
+		}
 		if (sub_expn != (Node)0 && check_discriminant(sub_expn)) {
 			errmsg_l("a discriminant appearing in a subtype indication ",
 			  "must appear by itself", "3.7.1", expn);
@@ -1625,7 +1627,6 @@ Symbol named_type(char *name)  /*;named_type*/
 	 */
 
 	Symbol	type_name;
-	static int tint=0;
 
 	if (cdebug2 > 3) TO_ERRFILE("AT PROC :  named_type");
 

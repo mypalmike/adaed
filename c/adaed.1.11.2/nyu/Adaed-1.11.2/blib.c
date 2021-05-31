@@ -185,7 +185,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 		tup[i] = (char *) tup_new(0);
 	unit_slots_put(unit_number_now, tup);
 	to_check	  = tup_new1(main_name);
-	idle_precedes  = set_new1((char *) unit_numbered(main_name));
+	idle_precedes  = set_new1((char *)(long long) unit_numbered(main_name));
 	to_bind	  = tup_new(0);
 	missing_units  = tup_new(0);
 	compiled_units = tup_new(unit_numbers);
@@ -242,7 +242,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			 if (!tup_memstr(s_name, compiled_units))
 				 missing_units = tup_with(missing_units, s_name);
 			 idle_precedes = set_with(idle_precedes,
-			   (char *) unit_numbered(s_name));
+			   (char *)(long long) unit_numbered(s_name));
 		ENDFORTUP(ft1);
 
 		if (streq(unit_name_type(name), "sp")) {
@@ -250,7 +250,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			if (tup_memstr(body, compiled_units)) {
 				to_check = tup_with(to_check, body);
 				idle_precedes = set_with(idle_precedes,
-				  (char *)unit_numbered(body));
+				  (char *)(long long)unit_numbered(body));
 			}
 			else if (needs_body_bnd(name))
 				missing_units = tup_with(missing_units, body);
@@ -265,7 +265,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			else
 				missing_units = tup_with(missing_units, body);
 			idle_precedes = set_with(idle_precedes,
-			  (char *) unit_numbered(body));
+			  (char *)(long long) unit_numbered(body));
 		}
 
 		else if (streq(unit_name_type(name), "su")) {
@@ -364,7 +364,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			/* Generics are not elaborated 
 			 * subunits are elaborated from the parent 
 			 */
-			elaborated = set_with(elaborated, (char *) name_num);
+			elaborated = set_with(elaborated, (char *)(long long) name_num);
 		}
 		else if (!tup_memstr(name, to_bind)) {
 			/* Don't need this unit */
@@ -372,7 +372,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 		else if (set_subset(precedes_map_get(name), elaborated)) {
 			/* May elaborate this unit now */
 			add_code(name);
-			elaborated = set_with(elaborated, (char *) name_num);
+			elaborated = set_with(elaborated, (char *)(long long) name_num);
 #ifdef TBSL
 			if (name_num < 11) { /* predef unit */
 #endif
@@ -385,7 +385,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			 */
 			n = tup_size(DELAYED_MAP);
 			for (i = 1; i <= n; i += 2) {
-				if (DELAYED_MAP[i] == (char *)name_num) {
+				if (DELAYED_MAP[i] == (char *)(long long)name_num) {
 					/* Retry units depending on this one */
 					elaboration_table=
 					  tup_add(delayed_map_get(name_num), elaboration_table);
@@ -401,13 +401,13 @@ int binder(Tuple aisread_tup)									/*;binder*/
 			/* delayed(unit) = (delayed(unit) ? []) with name; */
 			delayed = delayed_map_get(unit);
 			if (delayed == (Tuple)0)
-				delayed_map_put(unit, tup_new1((char *) name_num));
+				delayed_map_put(unit, tup_new1((char *)(long long) name_num));
 			else
-				delayed_map_put(unit, tup_with(delayed, (char *)name_num));
+				delayed_map_put(unit, tup_with(delayed, (char *)(long long)name_num));
 			/* TBSL: This code to be removed when predef is handled correctly */
 			if (name_num < num_predef_units) {
 				elaboration_table =
-				  tup_add(tup_new1((char *)unit), elaboration_table);
+				  tup_add(tup_new1((char *)(long long)unit), elaboration_table);
 			}
 		}
 	} /* end while */
@@ -452,13 +452,13 @@ int binder(Tuple aisread_tup)									/*;binder*/
 	if(tup_size(axq_needed)) { /* binding requiring predef data segments */
 		tup = read_predef_axq(axq_needed);
 		u_slots[SLOTS_DATA] = (char *)tup_with((Tuple) tup[1],
-		  (char *)CURRENT_DATA_SEGMENT);
+		  (char *)(long long)CURRENT_DATA_SEGMENT);
 		u_slots[SLOTS_CODE] = (char *)tup_with((Tuple) tup[2],
-		  (char *)CURRENT_CODE_SEGMENT);
+		  (char *)(long long)CURRENT_CODE_SEGMENT);
 	}
 	else { /* library option or no predefined unit needed */
-		u_slots[SLOTS_DATA] = (char *)tup_new1((char *)CURRENT_DATA_SEGMENT);
-		u_slots[SLOTS_CODE] = (char *)tup_new1((char *)CURRENT_CODE_SEGMENT);
+		u_slots[SLOTS_DATA] = (char *)(long long)tup_new1((char *)(long long)CURRENT_DATA_SEGMENT);
+		u_slots[SLOTS_CODE] = (char *)(long long)tup_new1((char *)(long long)CURRENT_CODE_SEGMENT);
 	}
 #else
 	u_slots[SLOTS_DATA] = (char *)tup_new1((char *)CURRENT_DATA_SEGMENT);
@@ -502,7 +502,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 
 	/* OWNED_SLOTS(unit_name)(2) with= CURRENT_CODE_SEGMENT; */
 	u_slots[SLOTS_CODE] = (char *)tup_with((Tuple) u_slots[SLOTS_CODE],
-	  (char *)CURRENT_CODE_SEGMENT);
+	  (char *)(long long)CURRENT_CODE_SEGMENT);
 
 #ifdef TBSL
 	LIB_UNIT (unit_name) = [NODE_COUNT, '' , AXQfile]
@@ -520,7 +520,7 @@ int binder(Tuple aisread_tup)									/*;binder*/
 	DATA_SEGMENT_MAP = 
 	  segment_map_put(DATA_SEGMENT_MAP, CURRENT_DATA_SEGMENT, DATA_SEGMENT);
 
-	compilation_table = tup_with(compilation_table, (char *)unit_number_now);
+	compilation_table = tup_with(compilation_table, (char *)(long long)unit_number_now);
 	pUnit = pUnits[unit_number_now];
 	pUnit->aisInfo.numberSymbols = seq_symbol_n;
 	pUnit->aisInfo.symbols = (char *) tup_new(seq_symbol_n);
@@ -548,7 +548,7 @@ static void update_elaborate(char *name)				/*;update_elaborate*/
 		 */
 		if (unit != 0) {
 			if (streq(pUnits[unit]->libInfo.obsolete, "ok"))
-				precedes = set_with(precedes, (char *) unit);
+				precedes = set_with(precedes, (char *)(long long) unit);
 		}
 	ENDFORTUP(ft1);
 	precedes_map_put(name, precedes);
@@ -651,7 +651,7 @@ static Tuple delayed_map_get(int unum)					/*;delayed_map_get*/
 
 	n = tup_size(DELAYED_MAP);
 	for (i = 1; i <= n; i += 2) {
-		if (DELAYED_MAP[i] == (char *)unum)
+		if (DELAYED_MAP[i] == (char *)(long long)unum)
 			return (Tuple) DELAYED_MAP[i+1];
 	}
 	return (Tuple)0;
@@ -677,13 +677,13 @@ static void delayed_map_put(int unum, Tuple ntup)			/*;delayed_map_put*/
 
 	n = tup_size(DELAYED_MAP);
 	for (i = 1; i <= n; i += 2) {
-		if (DELAYED_MAP[i] == (char *) unum) {
+		if (DELAYED_MAP[i] == (char *)(long long) unum) {
 			DELAYED_MAP[i+1] = (char *) ntup;
 			return;
 		}
 	}
 	DELAYED_MAP = tup_exp(DELAYED_MAP, n + 2);
-	DELAYED_MAP[n+1] = (char *) unum;
+	DELAYED_MAP[n+1] = (char *)(long long) unum;
 	DELAYED_MAP[n+2] = (char *) ntup;
 }
 
@@ -693,10 +693,10 @@ static void delayed_map_undef(int unum)					/*;delayed_map_undef*/
 
 	n = tup_size(DELAYED_MAP);
 	for (i = 1; i <= n; i += 2) {
-		if (DELAYED_MAP[i] == (char *) unum) {
+		if (DELAYED_MAP[i] == (char *)(long long) unum) {
 			DELAYED_MAP[i] = DELAYED_MAP[n-1];
 			DELAYED_MAP[i+1] = DELAYED_MAP[n];
-			DELAYED_MAP[0] = (char *) (n-2);
+			DELAYED_MAP[0] = (char *)(long long) (n-2);
 			return;
 		}
 	}
@@ -847,7 +847,7 @@ static Tuple build_relay_sets(char *unit, int depth)	/*;build_relay_sets*/
 		s_table = tup_new(0);
 		FORTUP(name = (Symbol), s_rs, ft2);
 			reference_of(name);
-			s_table = tup_with(s_table, (char *) REFERENCE_OFFSET);
+			s_table = tup_with(s_table, (char *)(long long) REFERENCE_OFFSET);
 		ENDFORTUP(ft2);
 		segment_put_int(DATA_SEGMENT, s_sl);
 		segment_put_int(DATA_SEGMENT, tup_size(s_table));
@@ -865,7 +865,7 @@ static Tuple build_relay_sets(char *unit, int depth)	/*;build_relay_sets*/
 	RELAY_SET 		= save_relay_set;
 	LOCAL_REFERENCE_MAP 	= save_local_reference_map;
 	return_tup = tup_new(2);
-	return_tup[1] = (char *) u_sl;
+	return_tup[1] = (char *)(long long) u_sl;
 	return_tup[2] = (char *) u_rs;
 	return return_tup;
 }
@@ -904,7 +904,7 @@ static void update_subunit_context(char *subunit)	/*;update_subunit_context*/
 		 * subunits which happen to be in the PRE_COMP field of this subunit.
 		 */
 		if (!is_subunit(pUnits[unum]->name) && unum != ancestor_num)
-			precedes = set_with(precedes, (char *)unum);
+			precedes = set_with(precedes, (char *)(long long)unum);
 	ENDFORSET(fs1);
 	precedes_map_put(ancestor_body, precedes);
 }

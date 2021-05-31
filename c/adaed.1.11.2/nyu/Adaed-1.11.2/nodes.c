@@ -42,7 +42,7 @@ Node new_number_node(int value)							/*;new_number_node*/
 	Node	node;
 
 	node = node_new(as_number);
-	N_VAL (node) = (char *) value;
+	N_VAL (node) = (char *)(long long) value;
 	return node;
 }
 
@@ -75,7 +75,7 @@ Node new_attribute_node(int attr, Node arg1, Node arg2, Symbol typ)
 	Node	id_node, attr_node;
 
 	id_node	     = node_new(as_number);
-	N_VAL (id_node)   = (char *) attr;
+	N_VAL (id_node)   = (char *)(long long) attr;
 	attr_node	     = node_new(as_attribute);
 	N_AST1(attr_node) = id_node;
 	N_AST2(attr_node) = arg1;

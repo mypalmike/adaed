@@ -235,9 +235,9 @@ static void const_redecl(Node id_list_node, Node type_indic_node,
 			nam_list = tup_with(nam_list, (char *)symbol_any);
 			continue;
 		}
-		else if ( ((ut = TYPE_OF(u_n)) != type_mark)
+		else if ( (((ut = TYPE_OF(u_n)) != type_mark)
 	      /* They may still be the same subtype of some private type.*/
-		  && (TYPE_OF(ut) != TYPE_OF(type_mark))
+		  && (TYPE_OF(ut) != TYPE_OF(type_mark)))
 		  || (SIGNATURE(ut) != SIGNATURE(type_mark)))
 		{
 			errmsg_str("incorrect type in redeclaration of %", id,
@@ -924,9 +924,10 @@ static void derived_type(Symbol derived_subtype,Node def_node) /*;derived_type*/
 	/* A derived type defined in a prackage specification cannot be used for
 	 * further derivation until the end of its visible part. 
 	 */
-	if (is_derived_type(parent_type) && (in_open_scopes(parent_type)
-	  && (nat == na_package_spec || nat == na_generic_package_spec))
-	  ||  TYPE_OF(parent_type) == symbol_incomplete
+	if ( (is_derived_type(parent_type)
+		&& (in_open_scopes(parent_type)
+  		&& (nat == na_package_spec || nat == na_generic_package_spec)))
+	  || TYPE_OF(parent_type) == symbol_incomplete
 	  || private_ancestor(parent_type) != (Symbol)0 ) {
 		errmsg_id("premature derivation of derived or private type %",
 		  parent_type, "3.4, 7.4.1", type_indic_node);
@@ -1214,7 +1215,7 @@ static void derive1_subprogram(Symbol obj, Symbol parent_type,
 		}
 		t = tup_new(4);
 		t[1] =  strjoin(id, "");
-		t[2] = (char *) nat;
+		t[2] = (char *) (long long)nat;
 		t[3] = (char *) tf;
 		t[4] = (char *) dx;
 		new_sig = tup_with(new_sig, (char *) t);
@@ -1337,7 +1338,7 @@ static void new_enum_type(Symbol type_name, Node def_node)  /*;new_enum_type*/
 		/*    lit_map(N_VAL(literals_list(i))) := i-1;*/
 		/*    lit_map[2*i-1] = (char *) N_VAL((Node)(literals_list[i]));*/
 		lit_map[2*i-1] = N_VAL(tmpnode);
-		lit_map[2*i] = (char *) i-1;
+		lit_map[2*i] = (char *) (long long) i-1;
 	}
 	lo = new_ivalue_node(int_const(0), type_name);
 	hi = new_ivalue_node(int_const(tup_size(literals_list) - 1), type_name);

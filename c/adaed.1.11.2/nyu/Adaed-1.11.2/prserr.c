@@ -24,6 +24,7 @@
 
 #include "hdr.h"
 #include "ada.h"
+#include "miscprots.h"
 #include "adalexprots.h"
 #include "actionprots.h"
 #include "pspansprots.h"
@@ -1367,7 +1368,7 @@ static void get_next(int k)				/*;get_next*/
 		tokind = toksiz - 1;
 }
 
-add_to_top(struct prsstack *tok)						/* ;add_to_top */
+void add_to_top(struct prsstack *tok)						/* ;add_to_top */
 {
 	/* this procedure replaces the old ADDTOTOP macro, which assumed there
 	 * was room in tokens and did not check for a full queue before adding
@@ -1380,7 +1381,7 @@ add_to_top(struct prsstack *tok)						/* ;add_to_top */
 	if (siz == toksiz - 1) 	/* queue is full */
 	{						/* reallocate and enlarge ! */
 		toksiz = toksiz + 50;
-		tokens = (struct prsstack **) erealloc(tokens, (unsigned) (toksiz * 
+		tokens = (struct prsstack **) erealloc((char*)tokens, (unsigned) (toksiz *
 						sizeof(struct prsstack *)));
 	}
 	tokens[tokind = (tokind +1) % toksiz] = tok;

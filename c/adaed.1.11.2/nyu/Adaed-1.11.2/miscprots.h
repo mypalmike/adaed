@@ -43,7 +43,7 @@ char *strrchr(const char *, int);
 char *libset(char *);
 char *ifname(char *, char *);
 IFILE *ifopen(char *, char *, char *, int);
-static void openerr(char *, char *);
+/* static void openerr(char *, char *); */
 void ifclose(IFILE *);
 void ifoclose(IFILE *);
 long ifseek(IFILE *, char *, long, int);

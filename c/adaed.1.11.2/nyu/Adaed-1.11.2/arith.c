@@ -184,10 +184,10 @@ int    *int_add(int *u, int *v)										/*;int_add*/
 		}
 		else {
 			int	    us, vs;
-			if (us = (u[1] < 0)) {
+			if ((us = (u[1] < 0))) {
 				u[1] = -u[1];
 			}
-			if (vs = (v[1] < 0)) {
+			if ((vs = (v[1] < 0))) {
 				v[1] = -v[1];
 			}
 			if (int_gtr(u, v)) {

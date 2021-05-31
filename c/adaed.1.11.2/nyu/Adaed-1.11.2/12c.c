@@ -999,6 +999,8 @@ static Symbol valid_array_instance(Symbol g_name, Symbol actual_type,
 			return actual_type;
 		}
 	}
+
+	return NULL;
 }
 
 static int is_valid_disc_instance(Symbol g_name, Symbol a_name,
@@ -1079,7 +1081,7 @@ static void generic_subprog_instance(Node instance, Symbol g_name,
 		FORTUPI(f=(Symbol), SIGNATURE(g_name), i, ft1);
 			tup = tup_new(4);
 			tup[1] = ORIG_NAME(f);
-			tup[2] = (char *) NATURE(f);
+			tup[2] = (char *)(long long) NATURE(f);
 			tup[3] = (char *)replace(TYPE_OF(f), type_map);
 			tup[4] = (char *) instantiate_tree((Node) default_expr(f),type_map);
 			new_sig[i] = (char *) tup;
@@ -1133,7 +1135,9 @@ static Tuple find_renamed_types(int kind, Tuple formals, Symbol ret,
 	 * types of the new signature
 	 */
 
-	Symbol	old1, e_name, typ, typ2, res, i;
+	Symbol	old1, e_name, typ, i;
+	Symbol	typ2 = NULL;
+	Symbol	res = NULL;
 	Node		e_node, attr_node, typ_node;
 	int		attr;
 	Tuple	types, tup;

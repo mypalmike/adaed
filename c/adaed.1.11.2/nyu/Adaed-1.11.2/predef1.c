@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <setjmp.h>
 #include <string.h>
+#include <unistd.h>
 #include "ipredef.h"
 #include "intbprots.h"
 #include "intcprots.h"
@@ -198,7 +199,7 @@ void predef()                                /*;predef*/
 
 			strcpy(work_string, IOFNAME);
 
-			if (operation == P_SIO_DELETE || P_DIO_DELETE)
+			if (operation == P_SIO_DELETE || operation == P_DIO_DELETE)
 				close_file();
 			else /* operation == P_TIO_DELETE */
 				close_textio();
@@ -932,7 +933,7 @@ void predef()                                /*;predef*/
 	case P_TIO_END_OF_FILE:
 	case P_TIO_END_OF_FILE_FILE:
 		{
-		   int     result;
+		   int     result = 0;
 
 		   get_file_argument_or_default();
 		   check_status(TIO_IN_FILE);

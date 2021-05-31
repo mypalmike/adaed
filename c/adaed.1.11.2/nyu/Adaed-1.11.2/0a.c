@@ -461,7 +461,7 @@ void init_sem()													/*;init_sem*/
 	 * NOTE, must NOT make any new entries to init_nodes after
 	 * doing assignment of tup_size below	ds 24 sep 84
 	 */
-	init_nodes[0] = (char *)init_node_count;
+	init_nodes[0] = (char *)(long long)init_node_count;
 
 	SIGNATURE(symbol_universal_integer) = SIGNATURE(symbol_integer);
 	SIGNATURE(symbol_universal_real) = SIGNATURE(symbol_float);
@@ -680,7 +680,7 @@ void init_sem()													/*;init_sem*/
 			s[1] = (char) i;
 			s[2] = '\'';
 			lmap[2 * i + 1] = s;
-			lmap[2 * i + 2] =(char *) i;
+			lmap[2 * i + 2] = (char *)(long long)i;
 			/* if (i >= 32 && i <= 126 )  -- enter all ascii chars in SYMBTAB */
 			ini_chain(s, na_literal, symbol_character);
 		}
@@ -718,7 +718,7 @@ void init_sem()													/*;init_sem*/
 		Symbol sym;
 		char	name[20];
 
-		for (i = 0; p = char_names[i]; i++) {
+		for (i = 0; (p = char_names[i]); i++) {
 			if (p[0] == ' ')
 				/* code folded from here */
 				break;

@@ -73,7 +73,7 @@ static void getlitmap(IFILE *ifile, Symbol sym)				/*;gettlitmap*/
 	tup = tup_new(n);
 	for (i = 1; i <= n; i+=2) {
 		tup[i] = getstr(ifile, "litmap-str");
-		tup[i+1] = (char *) getnum(ifile, "litmap-value");
+		tup[i+1] = (char *)(long long) getnum(ifile, "litmap-value");
 	}
 	OVERLOADS(sym) = (Set) tup;
 }
@@ -92,8 +92,8 @@ static char *getmisc(IFILE *ifile, Symbol sym, int mval)			/*;getmisc*/
 	if ((nat == na_package || nat == na_package_spec)) {
 		if (mval) {
 			tup = tup_new(3);
-			tup[1] = (char *) getnum(ifile, "misc-package-1");
-			tup[2] = (char *) getnum(ifile, "misc-package-2");
+			tup[1] = (char *)(long long) getnum(ifile, "misc-package-1");
+			tup[2] = (char *)(long long) getnum(ifile, "misc-package-2");
 			n = getnum(ifile, "misc-package-tupsize");
 			stup = tup_new(n);
 			for (i = 1; i<= n; i++)
@@ -108,12 +108,12 @@ static char *getmisc(IFILE *ifile, Symbol sym, int mval)			/*;getmisc*/
 	}
 	else if ((nat == na_procedure || nat == na_function) && mval) {
 		tup = tup_new(2);
-		tup[1] = (char *) getnum(ifile, "misc-number");
+		tup[1] = (char *)(long long) getnum(ifile, "misc-number");
 		tup[2] = (char *) getsymref(ifile, "misc-symref");
 		return (char *) tup;
 	}
 	else {
-		return  (char *)getnum(ifile, "misc");
+		return  (char *)(long long)getnum(ifile, "misc");
 	}
 }
 static void getrepr(IFILE * ifile, Symbol sym)			/*;getrepr*/
@@ -129,17 +129,17 @@ static void getrepr(IFILE * ifile, Symbol sym)			/*;getrepr*/
         	if (repr_tag == TAG_RECORD) 	{ /* record type */
 				repr_tup = tup_new(4);
 				repr_tup[1] = (char *) TAG_RECORD;
-           		repr_tup[2] = (char *) getnum(ifile,"repr-rec-size");
+           		repr_tup[2] = (char *)(long long) getnum(ifile,"repr-rec-size");
             	align_mod_tup = tup_new(2);
-            	align_mod_tup[1] = (char *) getnum(ifile,"repr-rec-mod");
+            	align_mod_tup[1] = (char *)(long long) getnum(ifile,"repr-rec-mod");
             	n = getnum(ifile,"repr-align_tup_size");
 				align_tup = tup_new(0);
             	for (i=1; i<=n; i++) {
 				    tup4 = tup_new(4);
 					tup4[1] = (char *) getsymref(ifile,"repr-rec-align-1");
-                	tup4[2] = (char *) getnum(ifile,"repr-rec-align-2");
-                	tup4[3] = (char *) getnum(ifile,"repr-rec-align-3");
-                	tup4[4] = (char *) getnum(ifile,"repr-rec-align-4");
+                	tup4[2] = (char *)(long long) getnum(ifile,"repr-rec-align-2");
+                	tup4[3] = (char *)(long long) getnum(ifile,"repr-rec-align-3");
+                	tup4[4] = (char *)(long long) getnum(ifile,"repr-rec-align-4");
 					align_tup = tup_with(align_tup, (char *) tup4);
 				}
 				align_mod_tup[2] = (char *) align_tup;
@@ -149,17 +149,17 @@ static void getrepr(IFILE * ifile, Symbol sym)			/*;getrepr*/
 			else if (repr_tag == TAG_ACCESS || 
 					 repr_tag == TAG_TASK) { /* access or task type */
 				repr_tup = tup_new(3);
-				repr_tup[1] = (char *) repr_tag;
- 				repr_tup[2] = (char *) getnum(ifile, "repr-size-2");
+				repr_tup[1] = (char *)(long long) repr_tag;
+ 				repr_tup[2] = (char *)(long long) getnum(ifile, "repr-size-2");
             	repr_tup[3] = (char *) getnodref(ifile, "repr-storage-size");
 				REPR(sym) = repr_tup;
 			}
         	else { 		/* non-record, non-access, non-task type */
             	n = getnum(ifile, "repr-tup-size");
 				repr_tup = tup_new(n);
-				repr_tup[1] = (char *) repr_tag;
+				repr_tup[1] = (char *)(long long) repr_tag;
             	for (i=2; i <= n; i++)
-                	repr_tup[i] = (char *) getnum(ifile, "repr-info");
+                	repr_tup[i] = (char *)(long long) getnum(ifile, "repr-info");
 				REPR(sym) = repr_tup;
 			}
 	}
@@ -306,11 +306,11 @@ static void getnval(IFILE *ifile, Node node)				/*;getnval*/
 	  case	as_line_no:
 	  case	as_number:
 	  case	as_predef:
-				nv = (char *) getnum(ifile, "nval-int");
+				nv = (char *)(long long) getnum(ifile, "nval-int");
 				break;
 	  case	as_mode:
 				/* convert mode, indeed, the inverse of change made in astread*/
-				nv = (char *) getnum(ifile, "nval-mode");
+				nv = (char *)(long long) getnum(ifile, "nval-mode");
 				break;
 	  case	as_ivalue:
 				ck = getnum(ifile, "nval-const-kind");
@@ -342,14 +342,14 @@ static void getnval(IFILE *ifile, Node node)				/*;getnval*/
 				break;
 	  case	as_terminate_alt:
 				/*: terminate_statement (9)  nval is depth_count (int)*/
-				nv = (char *) getnum(ifile, "nval-terminate-depth");
+				nv = (char *)(long long) getnum(ifile, "nval-terminate-depth");
 				break;
 	  case	as_string_ivalue:
 				/* nval is tuple of integers */
 				n = getnum(ifile, "nval-string-ivalue-size");
 				tup	 = tup_new(n);
 				for (i = 1;i <= n; i++)
-					tup[i] = (char *)getchr(ifile, "nval-string-ivalue");
+					tup[i] = (char *)(long long)getchr(ifile, "nval-string-ivalue");
 				nv = (char *) tup;
 				break;
 	  case	as_instance_tuple:
@@ -368,7 +368,7 @@ static void getnval(IFILE *ifile, Node node)				/*;getnval*/
 					}
 					tup[1] = (char *)smap;
 					/* second component is needs_body flag */
-					tup [2] = (char *)getnum(ifile, "nval-flag");
+					tup [2] = (char *)(long long)getnum(ifile, "nval-flag");
 					nv = (char *)tup;
 				}
 				else nv = NULL;
@@ -455,9 +455,9 @@ static void getovl(IFILE *ifile, Symbol sym)				/*;getovl*/
 static void getsig(IFILE *ifile, Symbol sym, int is_private)		/*;getsig*/
 {
 	int nat, i, n;
-	Tuple	sig, tup, sigtup;
+	Tuple	tup, sigtup;
+	Tuple	sig = NULL;
 	Node	node;
-	Symbol	s, s2;
 
 	/* The signature field is used as follows:
 	 * It is a symbol for:
@@ -563,7 +563,7 @@ array_case:
 				n = getnum(ifile, "sig-type-size");
 				i = getnum(ifile, "sig-constraint-kind");
 				sig = tup_new(n);
-				sig[1] = (char *) i;
+				sig[1] = (char *)(long long) i;
 				for (i=2; i <= n; i++)
 					sig[i] = (char *) getnodref(ifile, "sig-type-nodref");
 				break;
@@ -572,7 +572,7 @@ array_case:
 				i = getnum(ifile, "sig-constraint-kind");
 				if (i == CONSTRAINT_ARRAY) goto array_case;
 				sig = tup_new(n);
-				sig[1] = (char *) i;
+				sig[1] = (char *)(long long) i;
 				if (i == CONSTRAINT_DISCR) {
 					/* discriminant map */
 					n = getnum(ifile, "sig-constraint-discrmap-size");
@@ -877,7 +877,7 @@ static void getudecl(IFILE *ifile, int ui)				/*;getudecl*/
 		ctup = tup_new(n);
 		for (i = 1; i <= n; i++) {
 			cent = (Tuple) tup_new(2);
-			cent[1] = (char *) getnum(ifile, "decl-ctup-1");
+			cent[1] = (char *)(long long) getnum(ifile, "decl-ctup-1");
 			cn = getnum(ifile, "decl-cntup-size"); 
 			cntup = tup_new(cn);
 			for (ci = 1; ci <= cn; ci++)
@@ -1033,7 +1033,7 @@ char *read_ais(char *fname, int is_aic_file, char *uname,
 			n = getnum(ifile, "precomp-size");
 			set = (Set) set_new(n);
 			for (i = 1; i <= n; i++)
-				set = set_with(set, (char *) getnum(ifile, "precomp-value"));
+				set = set_with(set, (char *)(long long) getnum(ifile, "precomp-value"));
 			pUnit->aisInfo.preComp = (char *) set;
 			/* tuple of symbol table pointers */
 			aisunits_read = tup_with(aisunits_read, funame);
@@ -1047,7 +1047,7 @@ char *read_ais(char *fname, int is_aic_file, char *uname,
 		n = tup_size(tup);
 		nodes_group = tup_new(n);
 		for (i = 1; i <= n; i++)
-			nodes_group[i] = (char *) N_SEQ((Node)tup[i]);
+			nodes_group[i] = (char *)(long long) N_SEQ((Node)tup[i]);
 		retrieve_tree_nodes(ifile, unum, nodes_group);
 	}
 	ifclose(ifile);
@@ -1113,7 +1113,7 @@ int read_stub(char *fname, char *uname, char *ext)				/*;read_stub*/
 			ctup = tup_new(n);
 			for (i = 1; i <= n; i++) {
 				cent = (Tuple) tup_new(2);
-				cent[1] = (char *) getnum(ifile, "stub-cent-1");
+				cent[1] = (char *)(long long) getnum(ifile, "stub-cent-1");
 				cn = getnum(ifile, "stub-cent-2-size"); 
 				cntup = tup_new(cn);
 				for (ci = 1; ci <= cn; ci++)
@@ -1175,7 +1175,7 @@ int read_stub(char *fname, char *uname, char *ext)				/*;read_stub*/
 			n -= 1; /* true tuple size */
 			tup = tup_new(n);
 			for (i = 1; i <= n; i++)
-				tup[i] = (char *) getnum(ifile, "dang-relay-set-ent");
+				tup[i] = (char *)(long long) getnum(ifile, "dang-relay-set-ent");
 			ev->ev_dangling_relay_set = tup;
 		}
 		else {
@@ -1189,7 +1189,7 @@ int read_stub(char *fname, char *uname, char *ext)				/*;read_stub*/
 		n = tup_size(tup);
 		nodes_group = tup_new(n);
 		for (i = 1; i <= n; i++)
-			nodes_group[i] = (char *) N_SEQ((Node)tup[i]);
+			nodes_group[i] = (char *)(long long) N_SEQ((Node)tup[i]);
 		parent_unit = stub_parent_get(funame);
 		retrieve_tree_nodes(ifile, parent_unit, nodes_group);
 	}
@@ -1247,7 +1247,7 @@ int read_lib()					/*;read_lib*/
 		m = getnum(ifile, "stub-file-size");
 		tup = tup_new(m);
 		for (j = 1;j <= m;j++)
-			tup[j] = (char *) getnum(ifile, "stub-file");
+			tup[j] = (char *)(long long) getnum(ifile, "stub-file");
 		stubtup[4] = (char *) tup;
 	}
 	ifclose(LIBFILE);
@@ -1261,7 +1261,8 @@ void load_tre(IFILE *ifile, int comp_index)						/*;load_tre*/
 {
 	/* load entire tree file. */
 
-    long	rec, *off;
+    long	rec;
+    long	*off = NULL;
     int		i, fnum, unum, n, nodes, rootseq;
     char	*funame; 
 
@@ -1303,8 +1304,8 @@ static Tuple add_tree_node(Tuple tup, Node nod)				/*;add_tree_nodes */
 
 	if (nod == (Node)0 || nod == OPT_NODE) return tup;
 	seq = N_SEQ(nod);
-	if (tup_mem((char *) seq, tup)) return tup;
-	tup = tup_with(tup, (char *) seq);
+	if (tup_mem((char *)(long long) seq, tup)) return tup;
+	tup = tup_with(tup, (char *)(long long) seq);
 	return tup;
 }
 
@@ -1385,13 +1386,13 @@ void retrieve_generic_tree(Node node1, Node node2)	/*;retrieve_generic_tree*/
 	 * node1 represents the body_node.
 	 */
 	if (N_KIND(node1) ==  as_unread) {
-		tup = tup_new1((char *) N_SEQ(node1));
+		tup = tup_new1((char *)(long long) N_SEQ(node1));
 	}
 	else {
 		tup = tup_new(0);
 	}
 	if (node2 != (Node)0 && N_KIND(node2) == as_unread) {
-		tup = tup_with(tup, (char *) N_SEQ(node2));
+		tup = tup_with(tup, (char *)(long long) N_SEQ(node2));
 	}
 	if (tup_size(tup) != 0) {
 		unum = N_UNIT(node1);

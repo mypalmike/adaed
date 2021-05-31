@@ -262,7 +262,11 @@ name.
 #include <ctype.h>
 #include <string.h>
 #include "config.h"
+#ifdef BSD
+#include <unistd.h>
+#endif
 #include "arith.h"
+
 /*
 		SYMBOL TABLE
 

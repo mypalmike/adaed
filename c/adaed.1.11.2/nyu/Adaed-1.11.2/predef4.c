@@ -41,6 +41,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef IBM_PC
 #include <io.h>
 #endif

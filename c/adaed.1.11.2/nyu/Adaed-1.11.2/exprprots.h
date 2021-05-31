@@ -15,4 +15,3 @@ void gen_convert(Symbol, Symbol);
 void gen_access_qual(int, Symbol);
 Segment array_ivalue(Node);
 Segment record_ivalue(Node);
-static int code_map(Symbol);

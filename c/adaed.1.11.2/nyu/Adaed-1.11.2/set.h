@@ -53,11 +53,11 @@ array gives the number of components.
 /* Note that tup only evaluated once in FORTUP */
 #define FORTUP(var,tup,iv) \
     iv.fortup_val = tup;\
-    if(iv.fortup_count = (int) iv.fortup_val[0]) {\
+    if((iv.fortup_count = (int) iv.fortup_val[0])) {\
     do { var *++iv.fortup_val;
 #define FORTUPI(var,tup,ndx,iv) \
     iv.fortup_val = tup;\
-    if(iv.fortup_count = (int) iv.fortup_val[0]) {\
+    if((iv.fortup_count = (int) iv.fortup_val[0])) {\
     ndx = 0;\
     do { ndx++; var *++iv.fortup_val; 
 #define ENDFORTUP(iv) }	  while(--iv.fortup_count); } 
@@ -105,7 +105,7 @@ typedef char **Set;
 
 #define FORSET(var,tup,iv) \
     iv.fortup_val = tup;\
-    if(iv.fortup_count = (int) iv.fortup_val[0]) {\
+    if((iv.fortup_count = (int) iv.fortup_val[0])) {\
     do { var *++iv.fortup_val;
 #define ENDFORSET(iv) }	  while(--iv.fortup_count); } 
 
@@ -118,6 +118,9 @@ typedef struct Forset {
 #ifdef EXPORT
 #define tup_size(t)	(*(int *)(t))
 #define set_size(s)	(*(int *)(s))
+#else
+int tup_size(Tuple tp);
+int set_size(Set sp);
 #endif
 #endif
 

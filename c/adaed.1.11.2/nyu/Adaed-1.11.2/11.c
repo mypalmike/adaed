@@ -110,7 +110,8 @@ void exception_handler(Node node)					/*;exception_handler*/
 void raise_statement(Node node)							/*;raise_statement*/
 {
 	Node	name_node;
-	Symbol	scope, except;
+	Symbol	except;
+	Symbol	scope = NULL;
 	int	exists;
 	Fortup	ft1;
 
@@ -143,7 +144,7 @@ void raise_statement(Node node)							/*;raise_statement*/
 		find_old(name_node);
 		except = N_UNQ(name_node);
 		if ( except == (Symbol)0
-		  || NATURE(except) != na_exception && TYPE_OF(except) != symbol_any) {
+		  || (NATURE(except) != na_exception && TYPE_OF(except) != symbol_any)) {
 			errmsg("Invalid exception name", "11.1", name_node);
 		}
 	}

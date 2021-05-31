@@ -440,7 +440,7 @@ void attrnum(Node node)										/*;attrnum*/
 		if (streq(name, s)) {
 			/* on match, change ast1 node to hold number, not str*/
 			N_KIND(N_AST1(node)) = as_number;
-			N_VAL(N_AST1(node)) = (char *) i;
+			N_VAL(N_AST1(node)) = (char *)(long long) i;
 			break;
 		}
 	}

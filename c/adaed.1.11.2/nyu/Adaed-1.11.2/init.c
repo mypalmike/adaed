@@ -131,7 +131,7 @@ void initialize_1()											/*;initialize_1*/
 	PRECEDES_MAP = precedes_map_new();
 
 	compilation_table = tup_new(num_predef_units);
-	for (i = 1; i <= num_predef_units; i++) compilation_table[i] = (char *) i;
+	for (i = 1; i <= num_predef_units; i++) compilation_table[i] = (char *)(long long) i;
 	late_instances    = tup_new(8);
 	late_instances[1] = strjoin("spSEQUENTIAL_IO", "");
 	late_instances[2] = strjoin("boSEQUENTIAL_IO", "");
@@ -188,7 +188,7 @@ void initialize_2()											/*;initialize_2*/
  */
 int init_slots(int kind)								/*;init_slots*/
 {
-	int n;
+	int n = 0;
 	if (compiling_predef) {
 		if (kind == SLOTS_DATA) n =  2;
 		else if (kind == SLOTS_CODE) n =  3;
@@ -291,7 +291,7 @@ void remove_slots(Tuple tup, int unit)						/*;remove_slots*/
 			i++;
 		}
 	}
-	tup[0] = (char *)n;
+	tup[0] = (char *)(long long)n;
 }
 
 void remove_interface(Tuple tup, int unit)				/*;remove_interface*/
@@ -314,7 +314,7 @@ void remove_interface(Tuple tup, int unit)				/*;remove_interface*/
 			i += 2;
 		}
 	}
-	tup[0] = (char *)n;
+	tup[0] = (char *)(long long)n;
 }
 
 void private_exchange(Symbol package_name)				/*;private_exchange*/ 

@@ -1145,7 +1145,7 @@ Tuple constraint_new(int ty)							/*;constraint_new*/
 	Tuple p;
 	/* TBSL: set length correctly, make always five for now */
 	p = tup_new(5);
-	p[1] = (char *) ty;
+	p[1] = (char *)(long long) ty;
 
 	return p;
 }

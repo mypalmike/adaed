@@ -16,7 +16,7 @@ int in_bin_ops(Symbol);
 int in_un_ops(Symbol);
 void expand_block(Node, Node, Node, Node);
 Symbol op_kind(Node);
-static void replace_name(Node, Symbol, Symbol);
+/* static void replace_name(Node, Symbol, Symbol); */
 void check_priv_instance(Tuple, Symbolmap);
 void expand_decl(Node);
 void expand_type(Node);

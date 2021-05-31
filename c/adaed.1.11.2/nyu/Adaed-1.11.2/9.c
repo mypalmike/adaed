@@ -117,7 +117,8 @@ void accept_statement(Node accept_node)					/*;accept_statement*/
 	 */
 
 	int		certain;
-	Symbol	task_name, task_type, real_name, entry_name, ix_t;
+	Symbol	task_name = NULL;
+	Symbol	task_type, real_name, entry_name, ix_t;
 	Set		entries;
 	Tuple	formals;
 	Forset	fs1;
@@ -416,7 +417,8 @@ void find_entry_name(Node obj_node)						/*;find_entry_name*/
 	 * loaded.
 	 */
 
-	Node	index_list_node, task_node, entry_node, index_node;
+	Node	index_list_node, task_node, index_node;
+	Node	entry_node = NULL;
 	Tuple	index_list;
 	Symbol	obj, task_name, t, e, sym;
 	Set		entries, task_types, entry_names;
@@ -590,7 +592,7 @@ void terminate_statement(Node node)					/*;terminate_statement*/
 		if (blktyp == BLOCK_LOOP || blktyp == BLOCK_HANDLER)
 			out_depth -= 1;
 	}
-	N_VAL(node) = (char *) out_depth;
+	N_VAL(node) = (char *)(long long) out_depth;
 }
 
 void abort_statement(Node node)							/*;abort_statement*/

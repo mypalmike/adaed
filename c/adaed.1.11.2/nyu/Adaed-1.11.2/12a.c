@@ -486,7 +486,7 @@ void generic_type_decl(Node node) /*;generic_type_decl*/
 {
 	Node	id_node, def_node, range_node, opt_disc;
 	char	*id, *root_id;
-	Symbol	root;
+	Symbol	root = NULL;
 	/*char	*attr;*/
 	Symbol	type_name, anon_type, generic_base, t;
 	Node	lo, hi, attr_node, precision, type_node;
@@ -931,7 +931,7 @@ void subprog_instance(Node node) /*;subprog_instance*/
 	FORTUPI(f=(Symbol), formals, ii, ft1);
 		newtup = tup_new(4);
 		newtup[1] = (char *)ORIG_NAME(f);
-		newtup[2] = (char *)NATURE(f);
+		newtup[2] = (char *)(long long)NATURE(f);
 		newtup[3] = (char *)replace(TYPE_OF(f), type_map);
 		newtup[4] = (char *)OPT_NODE;  	/* temporarily */
 		new_info[ii] = (char *) newtup;
@@ -941,7 +941,7 @@ void subprog_instance(Node node) /*;subprog_instance*/
 	new_return = replace(return_type, type_map);
 
 	new_specs = tup_new(3);
-	new_specs[1] = (char *) kind;
+	new_specs[1] = (char *)(long long) kind;
 	new_specs[2] = (char *) new_return;
 	new_specs[3]= (char *) new_info;
 

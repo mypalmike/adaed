@@ -99,12 +99,12 @@ static void display_symbol(Symbol symbol_explored)		/*;display_symbol*/
 	if (symbol_explored == (Symbol)0)
 		printf ("(Symbol)0\n");
 	else {
-		printf("NATURE %s        %d \n\n",
+		printf("NATURE %s        %p \n\n",
 		  nature_str (NATURE (symbol_explored)), symbol_explored);
-		printf("TYPE_OF %s   %d\n",
+		printf("TYPE_OF %s   %p\n",
 		  nature_str(NATURE(TYPE_OF(symbol_explored))),
 		  TYPE_OF(symbol_explored));
-		printf("ALIAS   %s   %d\n",
+		printf("ALIAS   %s   %p\n",
 		  nature_str(NATURE(ALIAS(symbol_explored))), ALIAS(symbol_explored));
 		printf("SIGNATURE :\n");
 	
@@ -114,7 +114,7 @@ static void display_symbol(Symbol symbol_explored)		/*;display_symbol*/
 			printf("empty_tuple\n");
 
 		if (SCOPE_OF(symbol_explored))
-			printf("SCOPE_OF %s   %d\n",
+			printf("SCOPE_OF %s   %p\n",
 			  nature_str(NATURE(SCOPE_OF(symbol_explored))),
 			  SCOPE_OF(symbol_explored));
 		else
@@ -124,19 +124,19 @@ static void display_symbol(Symbol symbol_explored)		/*;display_symbol*/
 		if (OVERLOADS (symbol_explored) != ((Tuple)0)) {
 			nature = NATURE(symbol_explored);
 			if (nature == na_enum)
-				printf(" literal map %d\n", OVERLOADS(symbol_explored));
+				printf(" literal map %p\n", OVERLOADS(symbol_explored));
 			else if (nature == na_package || nature == na_package_spec
 			  || nature == na_generic_package_spec
 			  || nature == na_generic_package || nature == na_task_type
 			  || nature == na_task_obj)
-				printf(" private declarations %d\n",
+				printf(" private declarations %p\n",
 				    OVERLOADS(symbol_explored));
 			else 
 				display_symbol_list  (OVERLOADS (symbol_explored), 1);
 		}
 		else
 			printf ("empty_set\n");
-		printf("DECLARED %d\n", DECLARED (symbol_explored));
+		printf("DECLARED %p\n", DECLARED (symbol_explored));
 		if (ORIG_NAME (symbol_explored) != (char *)0)
 			printf("ORIG_NAME %s\n", ORIG_NAME (symbol_explored));
 		printf("SEQ %d\n", S_SEQ (symbol_explored));
@@ -148,7 +148,7 @@ static void display_symbol(Symbol symbol_explored)		/*;display_symbol*/
 		printf("TYPE_SIZE %d\n", TYPE_SIZE (symbol_explored));
 
 		if (INIT_PROC(symbol_explored))
-			printf("INIT_PROC %s   %d\n",
+			printf("INIT_PROC %s   %p\n",
 			  nature_str(NATURE(INIT_PROC(symbol_explored))),
 			  INIT_PROC(symbol_explored));
 		else printf("INIT_PROC = 0\n");
@@ -613,13 +613,13 @@ void display_value (Node node_explored)				/*;display_value*/
 			else if (constant_kind == CONST_REAL)
 				printf ("%f", constant_explored->const_value.const_real);
 			else if (constant_kind == CONST_UINT)
-				printf ("%d", constant_explored->const_value.const_uint);
+				printf ("%d", *(constant_explored->const_value.const_uint));
 			else if (constant_kind == CONST_OM)
 				printf ("OM");
 			else if (constant_kind == CONST_RAT) {
 				rational_explored = constant_explored-> const_value.const_rat;
-				printf ("num %d den %d", rational_explored -> rnum,
-				  rational_explored -> rden);
+				printf ("num %d den %d", *(rational_explored -> rnum),
+				  *(rational_explored -> rden));
 			}
 			else if (constant_kind == CONST_CONSTRAINT_ERROR)
 				printf ("CONSTANT_CONSTRAINT_ERROR");
@@ -633,7 +633,7 @@ void display_value (Node node_explored)				/*;display_value*/
 		tup = (Tuple) N_VAL (node_explored);
 		n = tup_size (tup);
 		for (i = 1; i <= n; i++)
-			printf ("%c", tup [i]);
+			printf ("%c", *(tup [i]));
 		printf ("\"");
 	}
 	else if (kind_explored == as_null)
@@ -898,7 +898,7 @@ void give_node_reference (Node node)			/*;give_node_reference*/
 	if (node == (Node)0)
 		printf (" (Node)0 \n");
 	else
-		printf(" n%du%d %d%s", N_SEQ (node), N_UNIT (node), node,
+		printf(" n%du%d %p%s", N_SEQ (node), N_UNIT (node), node,
 		  kind_str (N_KIND (node)));
 }
 
@@ -907,7 +907,7 @@ void give_symbol_reference (Symbol symbol)		/*;give_symbol_reference*/
 	if (symbol == (Symbol)0)
 		printf (" (Symbol)0 \n");
 	else
-		printf(" s%du%d %d%s", S_SEQ (symbol), S_UNIT (symbol), symbol,
+		printf(" s%du%d %p%s", S_SEQ (symbol), S_UNIT (symbol), symbol,
 		  nature_str (NATURE (symbol)));
 }
 
@@ -921,14 +921,14 @@ void zpadr(char *s, char *p)			/*;zpadr*/
 #ifdef IBM_PC
 		printf(" %s %p", s, p);
 #else
-		printf(" %s %ld", s, p);
+		printf(" %s %p", s, p);
 #endif
 	}
 	else {
 #ifdef IBM_PC
 		printf(" %p", p);
 #else
-		printf(" %ld", p);
+		printf(" %p", p);
 #endif
 	}
 }
@@ -1456,14 +1456,14 @@ void zpdcl(Declaredmap dcl) /*;zpdcl*/
 #ifdef IBM_PC
 	printf("declared map %p\n", dcl);
 #else
-	printf("declared map %ld\n", dcl);
+	printf("declared map %p\n", dcl);
 #endif
 
 	FORDECLARED(str, sym, dcl, div)
 #ifdef IBM_PC
 	    printf("\"%s\" %p %d\n", str, sym, IS_VISIBLE(div));
 #else
-		printf("\"%s\" %ld %d\n", str, sym, IS_VISIBLE(div));
+		printf("\"%s\" %p %d\n", str, sym, IS_VISIBLE(div));
 #endif
 	ENDFORDECLARED(div)
 }
@@ -1749,10 +1749,10 @@ void zpunit(int unum)				/*;zpunit*/
 	else { /* if dumping unit 0 */
 		nodes = seq_node_n;
 		ntup = tup_copy(seq_node);
-		ntup[0] = (char *) seq_node_n;
+		ntup[0] = (char *)(long long) seq_node_n;
 		symbols = seq_symbol_n;
 		stup = tup_copy(seq_symbol);
-		stup[0] = (char *) seq_symbol_n;
+		stup[0] = (char *)(long long) seq_symbol_n;
 		printf("unit dump for unit 0\n");
 	}
 	for (i = 1; i <= symbols; i++) {

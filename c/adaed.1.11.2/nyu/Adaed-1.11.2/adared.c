@@ -18,6 +18,7 @@
 #include "vars.h"
 #include "ada.h"
 #include "adared.h"
+#include "chapprots.h"
 #include "nodesprots.h"
 #include "smiscprots.h"
 #include "setprots.h"
@@ -908,7 +909,8 @@ void reduce(int red)									/*;reduce*/
  /* relation ::= simple_expression [NOT] IN range */
  case 113 :
 {
-    int kind, op_name;
+    int kind;
+    int op_name = 0;
     Node arg_list_node, simple_name;
     Span old_span;
 
@@ -1147,10 +1149,10 @@ void reduce(int red)									/*;reduce*/
 	label_list_node = node_new(as_list);
 	new_statement_list = tup_new(0);
 	FORTUP (tmp_node = (Node), N_LIST(AST(2)), ft1);
-		if (tmp_list = getlabels(tmp_node))
+		if ((tmp_list = getlabels(tmp_node)))
 			nodelabels = tup_add(nodelabels, tmp_list);
 		if (N_KIND(tmp_node) == as_statement)
-			if (tmp_list = N_LIST(N_AST1(tmp_node)))
+			if ((tmp_list = N_LIST(N_AST1(tmp_node))))
 				lablistlabels = tup_add(lablistlabels, tmp_list);
 		if(N_KIND(tmp_node) != as_pragma) {
 			/* insert as_line_no node before the current node (tmp_node) */
@@ -1360,7 +1362,7 @@ not match %s", namelist(N_ID(AST(6))));
             syntax_err(left_span, right_span, msg);
         }
         simple_name1 = node_new(as_simple_name);
-        sprintf(newlabel, "#%x", simple_name1);
+        sprintf(newlabel, "#%p", simple_name1);
         N_ID(simple_name1) = namemap(newlabel, strlen(newlabel));
  	set_span(simple_name1, left_span);
     }
@@ -1436,7 +1438,7 @@ not match %s", namelist(N_ID(AST(6))));
 			get_right_span_p(AST(6)), msg);
         }
         simple_name1 = node_new(as_simple_name);
-        sprintf(newlabel, "#%x", simple_name1);
+        sprintf(newlabel, "#%p", simple_name1);
         N_ID(simple_name1) = namemap(newlabel, strlen(newlabel));
  		set_span(simple_name1, left_span);
     }
@@ -3146,7 +3148,6 @@ alternatives are present");
 {
 	extern int unit_number_now, unit_numbers, seq_node_n;
 	extern char** seq_node;
-	Node snode;
 	int i;
 
     node = AST(0);

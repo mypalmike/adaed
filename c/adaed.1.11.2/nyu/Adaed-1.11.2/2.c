@@ -29,8 +29,11 @@ void process_pragma(Node node)								/*;process_pragma*/
 	Node	priority, marker_node, type_node;
 	char	*id;
 	Tuple	args, arg_list;
-	Symbol	proc_name, p_type, id_sym;
-	int		nat, exists, newnat;
+	Symbol	p_type, id_sym;
+	Symbol	proc_name = NULL;
+	int		nat = 0;
+	int		exists;
+	int		newnat = 0;
 	Fortup	ft1;
 	Forset	fs1;
 
