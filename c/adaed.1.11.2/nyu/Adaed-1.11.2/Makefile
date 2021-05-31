@@ -18,8 +18,8 @@ LFLAGS=
 
 INSTALL = install
 
-BINDIR = /usr/local
-LIBDIR = /usr/local/lib
+BINDIR = ~/usr/local
+LIBDIR = ~/usr/local/lib
 MANDIR = ~/man
 
 .SUFFIXES:

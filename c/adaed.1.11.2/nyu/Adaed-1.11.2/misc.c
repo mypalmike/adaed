@@ -215,7 +215,7 @@ char *emalloc(unsigned n)										/*;emalloc */
 
 	char   *p;
 
-	if (n > 50000) chaos("emalloc: ridiculous argument");
+	if (n > 100000) chaos("emalloc: ridiculous argument");
 	p = calloc (1, n);
 	if (p == (char *) 0)
 		capacity("out of memory \n");
